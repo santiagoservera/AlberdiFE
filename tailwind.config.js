@@ -6,6 +6,9 @@ export default {
       colors: {
         textoVerde: "#4F6B5F",
       },
+      fontFamily: {
+        firelli: ["firelli-variable"],
+      },
     },
   },
   plugins: [],

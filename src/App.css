@@ -3,5 +3,9 @@
 @tailwind utilities;
 
 .containerWidth {
-  @apply w-11/12 max-w-[1600px] mx-auto;
+  @apply w-11/12 max-w-[1100px] mx-auto;
+}
+
+.bg-home {
+  background-color: #f4eae2;
 }

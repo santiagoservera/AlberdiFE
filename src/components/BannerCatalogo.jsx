@@ -17,7 +17,11 @@ function BannerCatalogo() {
           </a>
         </div>
         <div className="mt-[-35px]">
-          <img src={imgBannerCatalogo} alt="banner" />
+          <img
+            src={imgBannerCatalogo}
+            alt="banner"
+            className="img-banner-catalogo"
+          />
         </div>
       </div>
     </div>

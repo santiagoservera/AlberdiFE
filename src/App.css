@@ -9,3 +9,11 @@
 .bg-home {
   background-color: #f4eae2;
 }
+
+.bg-button {
+  background-color: #608274;
+}
+
+.img-banner-catalogo {
+  mask-image: linear-gradient(transparent, white 15%);
+}

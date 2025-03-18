@@ -22,7 +22,7 @@ export const Navbar = () => {
   };
 
   return (
-    <header className="w-full z-10 bg-[#F4EAE2] relative ">
+    <header className="w-full z-10 bg-transparent relative ">
       <nav className="containerWidth flex h-full w-full gap-3 justify-between ">
         <div className="flex h-full py-[25px] gap-1 ">
           <Link to="/" className="flex items-center gap-2">
@@ -35,27 +35,42 @@ export const Navbar = () => {
         </div>
         <div className="flex w-1/2 justify-between items-center text-textoVerde">
           <div className="hidden md:flex items-center font-bold ">
-            <Link to="/" className="hover:cursor-pointer text-lg">
+            <Link
+              to="/"
+              className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
+            >
               Inicio
             </Link>
           </div>
           <div className="hidden md:flex items-center font-bold ">
-            <Link to="/newProduct" className="hover:cursor-pointer text-lg">
+            <Link
+              to="/newProduct"
+              className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
+            >
               Productos
             </Link>
           </div>
           <div className="hidden md:flex items-center font-bold ">
-            <Link to="/newProduct" className="hover:cursor-pointer text-lg">
+            <Link
+              to="/newProduct"
+              className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
+            >
               Servicios
             </Link>
           </div>
           <div className="hidden md:flex items-center font-bold ">
-            <Link to="/newProduct" className="hover:cursor-pointer text-lg">
+            <Link
+              to="/newProduct"
+              className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
+            >
               Beneficios
             </Link>
           </div>
           <div className="hidden md:flex items-center font-bold ">
-            <Link to="/newProduct" className="hover:cursor-pointer text-lg">
+            <Link
+              to="/newProduct"
+              className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
+            >
               Nosotros
             </Link>
           </div>

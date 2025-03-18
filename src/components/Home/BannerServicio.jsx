@@ -1,5 +1,5 @@
 import React from "react";
-import imgBanner from "../assets/imgBanner.png";
+import imgBanner from "../../assets/imgBanner.png";
 function BannerServicio() {
   return (
     <div className="containerWidth">

@@ -1,5 +1,5 @@
 import React from "react";
-import imgBannerCatalogo from "../assets/imgBannerCatalogo.png";
+import imgBannerCatalogo from "../../assets/imgBannerCatalogo.png";
 function BannerCatalogo() {
   return (
     <div className="w-full ">

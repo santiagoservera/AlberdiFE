@@ -1,103 +1,104 @@
-import React, { useRef, useState } from "react";
-("react");
-// import Swiper core and required modules
-
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import "swiper/css";
 import "swiper/css/pagination";
-
-// import required modules
 import { Pagination } from "swiper/modules";
-
 import ahorroCostos from "../../assets/AhorroCostos.jpg";
+
+const Beneficios = [
+  {
+    id: 1,
+    nombre: "Ahorra costos",
+    descripcion:
+      "Al tercerizar, las empresas evitan costos asociados a la contratación, capacitación, y gestión del personal de limpieza, así como la compra y mantenimiento de equipos y suministros de limpieza.",
+    imagen: ahorroCostos,
+  },
+  {
+    id: 2,
+    nombre: "Especialización y Calidad",
+    descripcion:
+      "Las empresas de limpieza profesional cuentan con personal capacitado y experimentado en técnicas de limpieza avanzadas, garantizando resultados de alta calidad y un entorno más limpio y saludable.",
+    imagen: ahorroCostos,
+  },
+  {
+    id: 3,
+    nombre: "Enfoque en el Core Business",
+    descripcion:
+      "Delegar la limpieza a una empresa especializada permite que la empresa se concentre en su actividad principal, mejorando la eficiencia y productividad.",
+    imagen: ahorroCostos,
+  },
+  {
+    id: 4,
+    nombre: "Flexibilidad y Adaptabilidad",
+    descripcion:
+      "Las empresas de limpieza pueden adaptar sus servicios a las necesidades específicas del cliente, ofreciendo horarios y frecuencias de limpieza flexibles que se ajusten a la operación del negocio.",
+    imagen: ahorroCostos,
+  },
+  {
+    id: 5,
+    nombre: "Cumplimiento Normativo",
+    descripcion:
+      "Las empresas de limpieza profesional están al tanto de las regulaciones y normativas en materia de higiene y seguridad, asegurando que todos los procedimientos cumplan con los estándares legales vigentes.",
+    imagen: ahorroCostos,
+  },
+  {
+    id: 6,
+    nombre: "Reducción de Riesgos y Responsabilidades",
+    descripcion:
+      "Las empresas de limpieza profesional cuentan con personal capacitado y experimentado en técnicas de limpieza avanzadas, garantizando resultados de alta calidad y un entorno más limpio y saludable.",
+    imagen: ahorroCostos,
+  },
+];
+
 const BeneficiosSection = () => {
+  // Estado para almacenar el beneficio seleccionado
+  const [beneficioSeleccionado, setBeneficioSeleccionado] = useState(
+    Beneficios[0]
+  );
+
   return (
     <div className="w-full">
       <div className="containerWidth flex flex-col">
         <div>
-          <p className="font-bold font-firelli text-textoVerde text-4xl">
+          <p className="font-bold font-firelli text-textoVerde text-4xl text-center md:text-start">
             Creamos <br /> beneficios <br /> colaterales
           </p>
         </div>
+
+        {/* Swiper */}
         <Swiper
-          slidesPerView={4}
           spaceBetween={30}
-          pagination={{
-            clickable: true,
-          }}
           modules={[Pagination]}
           className="mySwiper my-10"
+          breakpoints={{
+            320: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 4 },
+          }}
         >
-          <div>
-            <SwiperSlide>
+          {Beneficios.map((beneficio) => (
+            <SwiperSlide
+              key={beneficio.id}
+              onClick={() => setBeneficioSeleccionado(beneficio)}
+            >
               <img
-                src={ahorroCostos}
-                alt=""
-                className="h-[200px] w-[100px] rounded-lg"
+                src={beneficio.imagen}
+                alt={beneficio.nombre}
+                className="h-[200px] w-[100px] rounded-lg cursor-pointer"
               />
               <p className="py-2 font-firelli text-textoVerde text-center">
-                Ahorro de costos
+                {beneficio.nombre}
               </p>
             </SwiperSlide>
-          </div>
-          <div>
-            <SwiperSlide>
-              <img
-                src={ahorroCostos}
-                alt=""
-                className="h-[200px] w-[100px] rounded-lg"
-              />
-              <p className="py-2 font-firelli text-textoVerde text-center">
-                Especialización y Calidad
-              </p>
-            </SwiperSlide>
-          </div>
-          <div>
-            <SwiperSlide>
-              <img
-                src={ahorroCostos}
-                alt=""
-                className="h-[200px] w-[100px] rounded-lg"
-              />
-              <p className="py-2 font-firelli text-textoVerde text-center">
-                Enfoque en el Core Business
-              </p>
-            </SwiperSlide>
-          </div>
-          <div>
-            <SwiperSlide>
-              <img
-                src={ahorroCostos}
-                alt=""
-                className="h-[200px] w-[100px] rounded-lg"
-              />
-              <p className="py-2 font-firelli text-textoVerde text-center">
-                Flexibilidad y Adaptabilidad
-              </p>
-            </SwiperSlide>
-          </div>
-          <div>
-            <SwiperSlide>
-              <img
-                src={ahorroCostos}
-                alt=""
-                className="h-[200px] w-[100px] rounded-lg"
-              />
-              <p className="py-2 font-firelli text-textoVerde text-center">
-                Ahorro de costos
-              </p>
-            </SwiperSlide>
-          </div>
+          ))}
         </Swiper>
-        <div className="flex justify-between pb-40">
+
+        <div className="flex md:justify-between items-center md:flex-row flex-col gap-8 pb-40">
           <p className="text-4xl text-textoVerde font-bold font-firelli">
-            Ahorro <br /> de Costos
+            {beneficioSeleccionado.nombre}
           </p>
-          <p className="w-[30%] text-textoVerde font-firelli tracking-widest text-sm">
-             Al tercerizar, las empresas evitan costos asociados a la
-            contratación, capacitación, y gestión del personal de limpieza, así
-            como la compra y mantenimiento de equipos y suministros de limpieza.
+          <p className="md:w-[30%] text-textoVerde font-firelli tracking-widest md:text-sm text-lg">
+            {beneficioSeleccionado.descripcion}
           </p>
         </div>
       </div>

@@ -6,12 +6,12 @@ const NosotrosSection = () => {
   return (
     <div className="w-full">
       <div className="containerWidth flex flex-col">
-        <div className="flex justify-between py-10">
-          <p className="font-bold font-firelli text-textoVerde text-6xl">
+        <div className="flex justify-between md:flex-row flex-col py-10">
+          <p className="font-bold font-firelli text-center md:text-start text-textoVerde text-6xl">
             La limpieza <br />
             en los espacios
           </p>
-          <p className=" w-[30%] text-textoVerde font-firelli tracking-widest">
+          <p className=" md:w-[30%] text-textoVerde font-firelli tracking-widest">
             Toda empresa o entidad que tenga un espacio físico donde se realizan
             actividades necesita mantener estas instalaciones limpias. Esto
             incluye la limpieza organizacional, tanto interior como exterior,
@@ -21,12 +21,12 @@ const NosotrosSection = () => {
         <div>
           <img src={imgNosotros} alt="" />
         </div>
-        <div className="flex flex-row-reverse justify-between py-10">
-          <p className="font-bold text-end font-firelli text-textoVerde text-6xl">
+        <div className="flex md:flex-row-reverse flex-col  justify-between py-10">
+          <p className="font-bold md:text-end font-firelli text-textoVerde text-6xl text-center">
             Sobre <br />
             Alberdi Servicios
           </p>
-          <p className=" w-[30%] text-textoVerde font-firelli tracking-widest">
+          <p className=" md:w-[30%] text-textoVerde font-firelli tracking-widest">
             Alberdi S.A.S es una empresa originada en Argentina en 2001.
             Inicialmente enfocada en darle solución a los desechos generados por
             la construcción, eventualmente diversifica su enfoque hacia la

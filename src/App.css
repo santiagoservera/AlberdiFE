@@ -8,6 +8,7 @@
 
 .bg-home {
   background-color: #f4eae2;
+  z-index: -9999;
 }
 
 .bg-button {
@@ -18,23 +19,39 @@
   mask-image: linear-gradient(transparent, white 15%);
 }
 
-.swiper {
-  width: 100%;
-  height: 100%;
-}
-
 .swiper-slide {
-  text-align: center;
-  font-size: 18px;
-
-  /* Center slide text vertically */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
-.swiper-slide img {
-  display: block;
+.swiper-slide::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
+  background: linear-gradient(
+    to left,
+    rgba(244, 234, 226, 0.3),
+    /* Color de fondo con transparencia */ rgba(244, 234, 226, 0.8),
+    /* Casi sólido */ rgb(244, 234, 226) /* Totalmente sólido */
+  );
+  z-index: 1;
+  transition: opacity 0.3s ease;
 }
+
+.swiper-slide-active::after {
+  opacity: 0;
+}
+
+/* Si prefieres un degradado más sutil, puedes usar esta alternativa */
+/*
+.swiper-slide::after {
+  background: linear-gradient(to bottom, 
+    rgba(255, 255, 255, 0.5), 
+    rgba(255, 255, 255, 0.7), 
+    rgba(255, 255, 255, 0.5)
+  );
+}
+*/

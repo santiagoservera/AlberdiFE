@@ -6,9 +6,11 @@ import SeleccionServicio from "../components/Servicios/SeleccionServicio";
 const Servicios = () => {
   return (
     <>
-      <Navbar />
-      <SeleccionServicio />
-      <Footer />
+      <div className="bg-home lg:absolute">
+        <Navbar />
+        <SeleccionServicio />
+        <Footer />
+      </div>
     </>
   );
 };

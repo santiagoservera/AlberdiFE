@@ -1,5 +1,6 @@
 import React from "react";
 import imgBanner from "../../assets/imgBanner.png";
+import { Link } from "react-router-dom";
 function BannerServicio() {
   return (
     <div className="containerWidth">
@@ -14,12 +15,14 @@ function BannerServicio() {
             por nuestra innovación, calidad y compromiso <br /> para con el
             bienestar de la comunidad.
           </p>
-          <a
-            href=""
-            className="py-2 px-3 text-[#FBF7F4] bg-[#4F6B5F] tracking-wider rounded-full font-firelli font-semibold hover:bg-[#2c3b35]"
-          >
-            Solicitar servicio
-          </a>
+          <Link to="/Servicios">
+            <a
+              href=""
+              className="py-2 px-3 text-[#FBF7F4] bg-[#4F6B5F] tracking-wider rounded-full font-firelli font-semibold hover:bg-[#2c3b35]"
+            >
+              Solicitar servicio
+            </a>
+          </Link>
         </div>
         <div className="md:w-[400px]">
           <img src={imgBanner} alt="banner" className="w-full" />

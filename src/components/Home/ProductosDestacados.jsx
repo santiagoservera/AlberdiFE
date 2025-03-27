@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const productos = [
   {
@@ -115,12 +116,14 @@ function ProductosDestacados() {
           </div>
         ))}
         <div className="flex justify-center ">
-          <a
-            href=""
-            className="  rounded-full bg-button py-1 px-3 text-[#FBF7F4] text-sm hover:bg-[#2c3b35] font-firelli"
-          >
-            Explorar catálogo
-          </a>
+          <Link to={"/Catalogo"}>
+            <a
+              href=""
+              className="  rounded-full bg-button py-1 px-3 text-[#FBF7F4] text-sm hover:bg-[#2c3b35] font-firelli"
+            >
+              Explorar catálogo
+            </a>
+          </Link>
         </div>
       </div>
     </div>

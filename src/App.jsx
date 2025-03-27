@@ -6,6 +6,8 @@ import Nosotros from "./pages/Nosotros";
 import Servicios from "./pages/Servicios";
 import Catalogo from "./pages/Catalogo";
 
+import ProductoDetalle from "./pages/ProductoDetalle";
+
 function App() {
   return (
     <Router>
@@ -14,6 +16,7 @@ function App() {
         <Route path="/Nosotros" element={<Nosotros />} />
         <Route path="/Servicios" element={<Servicios />} />
         <Route path="/Catalogo" element={<Catalogo />} />
+        <Route path="/producto/:id" element={<ProductoDetalle />} />
       </Routes>
     </Router>
   );

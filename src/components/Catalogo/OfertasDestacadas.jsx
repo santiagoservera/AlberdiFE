@@ -49,7 +49,7 @@ const OfertasDestacadas = () => {
   return (
     <div className="w-full h-auto mt-20">
       <div className="containerWidth flex flex-col justify-center items-center">
-        <div className="flex w-full justify-start">
+        <div className="flex w-full md:justify-start justify-center">
           <p className="font-firelli text-3xl text-textoVerde font-extrabold">
             Ofertas destacadas
           </p>
@@ -58,7 +58,7 @@ const OfertasDestacadas = () => {
         {chunkedProductos.map((grupo, index) => (
           <div
             key={index}
-            className="flex flex-wrap justify-between w-full md:justify-between  my-10"
+            className="flex flex-wrap justify-center gap-7 md:gap-0 w-full md:justify-between  my-10"
           >
             {grupo.map((producto) => (
               <div

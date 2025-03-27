@@ -44,7 +44,7 @@ export const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center font-bold ">
             <Link
-              to="/newProduct"
+              to="/Catalogo"
               className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
             >
               Productos
@@ -52,7 +52,7 @@ export const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center font-bold ">
             <Link
-              to="/newProduct"
+              to="/Servicios"
               className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
             >
               Servicios
@@ -60,7 +60,7 @@ export const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center font-bold ">
             <Link
-              to="/newProduct"
+              to="/Nosotros"
               className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
             >
               Beneficios
@@ -68,7 +68,7 @@ export const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center font-bold ">
             <Link
-              to="/newProduct"
+              to="/Nosotros"
               className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
             >
               Nosotros

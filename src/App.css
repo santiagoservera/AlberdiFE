@@ -19,12 +19,12 @@
   mask-image: linear-gradient(transparent, white 15%);
 }
 
-.swiper-slide {
+.servicios .swiper-slide {
   position: relative;
   transition: all 0.3s ease;
 }
 
-.swiper-slide::after {
+.servicios .swiper-slide::after {
   content: "";
   position: absolute;
   top: 0;
@@ -41,7 +41,7 @@
   transition: opacity 0.3s ease;
 }
 
-.swiper-slide-active::after {
+.servicios .swiper-slide-active::after {
   opacity: 0;
 }
 

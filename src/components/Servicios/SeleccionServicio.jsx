@@ -96,7 +96,7 @@ const SeleccionServicio = () => {
               },
             }}
             modules={[]}
-            className="mySwiper"
+            className="mySwiper servicios"
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) =>
               setServicioActivo(Servicios[swiper.activeIndex])

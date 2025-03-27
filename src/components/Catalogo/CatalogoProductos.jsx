@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-
+import { Link, useNavigate } from "react-router-dom";
 const Categorias = [
   { id: 1, nombre: "Químicos" },
   { id: 2, nombre: "Papel" },
@@ -26,6 +24,8 @@ const productos = [
     id: 1,
     nombre: "Producto 1",
     descripcion: "Elimina suciedad y grasa en todo tipo de superficies.",
+    detalle:
+      "Acabado de poliuretano compuesto por polímeros uretánicos y acrílicos. Proporciona un excelente nivel de brillo y mayor durabilidad.  Es antideslizante y da un efecto piso mojado. Su transparencia característica, permite mantener el color original del piso.  Su exclusiva fórmula protege los pisos formando una capa impermeabilizante resistente a pisadas, rayones, marcas y suciedades, facilitando el mantenimiento diario de los pisos.  Ideal para alto tránsito, grandes áreas, pisos de mosaico, mármol, PVC, goma, flexiplast, plásticos, etc. y para ser utilizado con máquinas de alta velocidad (con un paño blanco o natural/porco).",
     imagen:
       "https://s3-alpha-sig.figma.com/img/ee7f/e163/8792225593bf8799a5717739edb9e3bd?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=pvK46a2ciMzq3-5VyRhz0r5RN0gXLLMAoFB2hMdQZLtaekwEENENkRGPL7-mM53L5p4enuEnQ7uFzd7hXkOk~kyuNfPkBVnjcsaY4pl1CUNdN0yENhhNaiTo37AuGamyfCLaaPndXvCffc8lBYaAGlYjsHwVal9dEr7j3srlghWxwXHBuVlyMxzcw62JnH5Z1ENExyzxxwoSnN7OebOXCV1dl2-ref4SRoHW9dg3YGHzHwoESQAS7BWYs~J0aRAxGnSqbUyMn8mkcxuM4b5Zck3jFqaKuBxDBeB~SFe7UJ2yt-i5tkRrJMvCxoYxNX3fVnxsYfJLUGYqJ8t7hPZUsA__",
     categoriaId: 1,
@@ -34,6 +34,8 @@ const productos = [
     id: 2,
     nombre: "Producto 2",
     descripcion: "Limpieza profunda y desinfección.",
+    detalle:
+      "Acabado de poliuretano compuesto por polímeros uretánicos y acrílicos. Proporciona un excelente nivel de brillo y mayor durabilidad.  Es antideslizante y da un efecto piso mojado. Su transparencia característica, permite mantener el color original del piso.  Su exclusiva fórmula protege los pisos formando una capa impermeabilizante resistente a pisadas, rayones, marcas y suciedades, facilitando el mantenimiento diario de los pisos.  Ideal para alto tránsito, grandes áreas, pisos de mosaico, mármol, PVC, goma, flexiplast, plásticos, etc. y para ser utilizado con máquinas de alta velocidad (con un paño blanco o natural/porco).",
     imagen:
       "https://s3-alpha-sig.figma.com/img/ee7f/e163/8792225593bf8799a5717739edb9e3bd?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=pvK46a2ciMzq3-5VyRhz0r5RN0gXLLMAoFB2hMdQZLtaekwEENENkRGPL7-mM53L5p4enuEnQ7uFzd7hXkOk~kyuNfPkBVnjcsaY4pl1CUNdN0yENhhNaiTo37AuGamyfCLaaPndXvCffc8lBYaAGlYjsHwVal9dEr7j3srlghWxwXHBuVlyMxzcw62JnH5Z1ENExyzxxwoSnN7OebOXCV1dl2-ref4SRoHW9dg3YGHzHwoESQAS7BWYs~J0aRAxGnSqbUyMn8mkcxuM4b5Zck3jFqaKuBxDBeB~SFe7UJ2yt-i5tkRrJMvCxoYxNX3fVnxsYfJLUGYqJ8t7hPZUsA__",
     categoriaId: 2,
@@ -41,6 +43,8 @@ const productos = [
   {
     id: 3,
     nombre: "Producto 3",
+    detalle:
+      "Acabado de poliuretano compuesto por polímeros uretánicos y acrílicos. Proporciona un excelente nivel de brillo y mayor durabilidad.  Es antideslizante y da un efecto piso mojado. Su transparencia característica, permite mantener el color original del piso.  Su exclusiva fórmula protege los pisos formando una capa impermeabilizante resistente a pisadas, rayones, marcas y suciedades, facilitando el mantenimiento diario de los pisos.  Ideal para alto tránsito, grandes áreas, pisos de mosaico, mármol, PVC, goma, flexiplast, plásticos, etc. y para ser utilizado con máquinas de alta velocidad (con un paño blanco o natural/porco).",
     descripcion: "Aromatiza y deja un fresco aroma.",
     imagen:
       "https://s3-alpha-sig.figma.com/img/ee7f/e163/8792225593bf8799a5717739edb9e3bd?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=pvK46a2ciMzq3-5VyRhz0r5RN0gXLLMAoFB2hMdQZLtaekwEENENkRGPL7-mM53L5p4enuEnQ7uFzd7hXkOk~kyuNfPkBVnjcsaY4pl1CUNdN0yENhhNaiTo37AuGamyfCLaaPndXvCffc8lBYaAGlYjsHwVal9dEr7j3srlghWxwXHBuVlyMxzcw62JnH5Z1ENExyzxxwoSnN7OebOXCV1dl2-ref4SRoHW9dg3YGHzHwoESQAS7BWYs~J0aRAxGnSqbUyMn8mkcxuM4b5Zck3jFqaKuBxDBeB~SFe7UJ2yt-i5tkRrJMvCxoYxNX3fVnxsYfJLUGYqJ8t7hPZUsA__",
@@ -49,6 +53,8 @@ const productos = [
   {
     id: 4,
     nombre: "Producto 4",
+    detalle:
+      "Acabado de poliuretano compuesto por polímeros uretánicos y acrílicos. Proporciona un excelente nivel de brillo y mayor durabilidad.  Es antideslizante y da un efecto piso mojado. Su transparencia característica, permite mantener el color original del piso.  Su exclusiva fórmula protege los pisos formando una capa impermeabilizante resistente a pisadas, rayones, marcas y suciedades, facilitando el mantenimiento diario de los pisos.  Ideal para alto tránsito, grandes áreas, pisos de mosaico, mármol, PVC, goma, flexiplast, plásticos, etc. y para ser utilizado con máquinas de alta velocidad (con un paño blanco o natural/porco).",
     descripcion: "Absorbe rápidamente los líquidos.",
     imagen:
       "https://s3-alpha-sig.figma.com/img/ee7f/e163/8792225593bf8799a5717739edb9e3bd?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=pvK46a2ciMzq3-5VyRhz0r5RN0gXLLMAoFB2hMdQZLtaekwEENENkRGPL7-mM53L5p4enuEnQ7uFzd7hXkOk~kyuNfPkBVnjcsaY4pl1CUNdN0yENhhNaiTo37AuGamyfCLaaPndXvCffc8lBYaAGlYjsHwVal9dEr7j3srlghWxwXHBuVlyMxzcw62JnH5Z1ENExyzxxwoSnN7OebOXCV1dl2-ref4SRoHW9dg3YGHzHwoESQAS7BWYs~J0aRAxGnSqbUyMn8mkcxuM4b5Zck3jFqaKuBxDBeB~SFe7UJ2yt-i5tkRrJMvCxoYxNX3fVnxsYfJLUGYqJ8t7hPZUsA__",
@@ -58,6 +64,7 @@ const productos = [
 
 const CatalogoProductos = () => {
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState([]);
+  const [menuAbierto, setMenuAbierto] = useState(false);
 
   const handleCheckboxChange = (id) => {
     setCategoriasSeleccionadas((prevSeleccionadas) =>
@@ -85,8 +92,8 @@ const CatalogoProductos = () => {
 
   return (
     <div className="w-full">
-      <div className="flex containerWidth justify-between">
-        <div className="flex flex-col gap-5 p-4 rounded-md  w-[30%]">
+      <div className="flex containerWidth md:justify-between justify-center">
+        <div className="hidden md:flex flex-col gap-5 p-4 rounded-md  w-[30%]">
           <div className="bg-[#F4EAE2] flex items-center justify-center p-2 rounded-lg">
             <p className="font-bold text-xl font-firelli text-textoVerde">
               Categorías
@@ -106,17 +113,52 @@ const CatalogoProductos = () => {
             ))}
           </div>
         </div>
-        <div className="flex flex-col w-[65%] p-4">
+        <div className="flex flex-col md:w-[65%] p-4 gap-5">
           <div className="bg-[#F4EAE2] p-2 rounded-md items-center flex justify-center">
             <p className="text-textoVerde text-xl font-firelli font-bold">
               {categoriaSeleccionadaTexto}
             </p>
           </div>
+          <div className="relative md:hidden">
+            {/* Botón hamburguesa */}
+            <button
+              className="md:hidden p-2 bg-[#F4EAE2] rounded-lg flex items-center gap-2"
+              onClick={() => setMenuAbierto(!menuAbierto)}
+            >
+              {menuAbierto ? "✖" : "☰"} Categorías
+            </button>
+
+            {/* Contenedor del menú */}
+            <div
+              className={`absolute top-12 left-0 bg-[#F4EAE2] w-60 p-4 rounded-md shadow-lg transition-all duration-300
+        ${
+          menuAbierto ? "opacity-100 visible" : "opacity-0 invisible"
+        } md:opacity-100 md:visible md:static md:w-[30%]`}
+            >
+              <p className="font-bold text-xl font-firelli text-textoVerde text-center">
+                Categorías
+              </p>
+              <div className="flex flex-col gap-2 mt-4 font-firelli text-[#8BA99C] font-bold">
+                {Categorias.map((categoria) => (
+                  <label key={categoria.id} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={categoriasSeleccionadas.includes(categoria.id)}
+                      onChange={() => handleCheckboxChange(categoria.id)}
+                      className="w-4 h-4"
+                    />
+                    {categoria.nombre}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {productosFiltrados.length > 0 ? (
             <div className="flex flex-wrap justify-center md:justify-start gap-9 my-10">
               {productosFiltrados.map((producto) => (
-                <div
+                <Link
+                  to={`/producto/${producto.id}`}
                   key={producto.id}
                   className="flex flex-col justify-center gap-1 w-[200px] hover:bg-[#F4EAE2] hover:rounded-lg hover:shadow-2xl p-2 cursor-pointer"
                 >
@@ -131,7 +173,7 @@ const CatalogoProductos = () => {
                   <p className="md:text-sm text-lg text-textoVerde font-firelli">
                     {producto.descripcion}
                   </p>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (

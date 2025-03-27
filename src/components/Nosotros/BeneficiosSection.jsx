@@ -69,7 +69,7 @@ const BeneficiosSection = () => {
         <Swiper
           spaceBetween={30}
           modules={[Pagination]}
-          className="mySwiper my-10"
+          className="mySwiper my-10 w-full"
           breakpoints={{
             320: { slidesPerView: 1 },
             640: { slidesPerView: 2 },
@@ -80,12 +80,15 @@ const BeneficiosSection = () => {
             <SwiperSlide
               key={beneficio.id}
               onClick={() => setBeneficioSeleccionado(beneficio)}
+              className="flex items-center justify-center"
             >
-              <img
-                src={beneficio.imagen}
-                alt={beneficio.nombre}
-                className="h-[200px] w-[100px] rounded-lg cursor-pointer"
-              />
+              <div className="flex items-center justify-center">
+                <img
+                  src={beneficio.imagen}
+                  alt={beneficio.nombre}
+                  className="h-[200px] w-[150px] rounded-lg cursor-pointer"
+                />
+              </div>
               <p className="py-2 font-firelli text-textoVerde text-center">
                 {beneficio.nombre}
               </p>

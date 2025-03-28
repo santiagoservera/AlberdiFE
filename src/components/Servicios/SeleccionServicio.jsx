@@ -1,11 +1,10 @@
-"use client";
-
 import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { SwiperNavButtons } from "../SwiperNavButtons";
+import { useNavigate } from "react-router-dom";
 
 // Importaciones de imágenes (asumiendo que están en la ruta correcta)
 import espaciosVerdes from "../../assets/espaciosVerdes.png";
@@ -51,6 +50,7 @@ const Servicios = [
 ];
 
 const SeleccionServicio = () => {
+  const navigate = useNavigate();
   const [servicioActivo, setServicioActivo] = useState(Servicios[0]);
   const [swiperInstance, setSwiperInstance] = useState(null);
 
@@ -70,7 +70,14 @@ const SeleccionServicio = () => {
           <p className="text-textoVerde mt-4 tracking-widest w-full lg:w-[70%] font-firelli">
             {servicioActivo.descripcion}
           </p>
-          <button className="mt-4 px-4 py-2 bg-[#4F6B5F] text-white rounded-full shadow font-firelli w-[80%] sm:w-[30%] mx-auto lg:mx-0">
+          <button
+            className="mt-4 px-4 py-2 bg-[#4F6B5F] text-white rounded-full shadow font-firelli w-[80%] sm:w-[30%] mx-auto lg:mx-0"
+            onClick={() =>
+              navigate("/FormularioServicio", {
+                state: { servicio: servicioActivo },
+              })
+            }
+          >
             ¡Solicitar servicio!
           </button>
         </div>

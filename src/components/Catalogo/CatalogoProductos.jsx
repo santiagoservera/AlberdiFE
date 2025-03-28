@@ -158,7 +158,7 @@ const CatalogoProductos = () => {
             <div className="flex flex-wrap justify-center md:justify-start gap-9 my-10">
               {productosFiltrados.map((producto) => (
                 <Link
-                  to={`/producto/${producto.id}`}
+                  to={`/Catalogo/producto/${producto.id}`}
                   key={producto.id}
                   className="flex flex-col justify-center gap-1 w-[200px] hover:bg-[#F4EAE2] hover:rounded-lg hover:shadow-2xl p-2 cursor-pointer"
                 >

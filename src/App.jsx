@@ -7,6 +7,7 @@ import Servicios from "./pages/Servicios";
 import Catalogo from "./pages/Catalogo";
 
 import ProductoDetalle from "./pages/ProductoDetalle";
+import FormularioServiciosPage from "./pages/FormularioServiciosPage";
 
 function App() {
   return (
@@ -16,7 +17,11 @@ function App() {
         <Route path="/Nosotros" element={<Nosotros />} />
         <Route path="/Servicios" element={<Servicios />} />
         <Route path="/Catalogo" element={<Catalogo />} />
-        <Route path="/producto/:id" element={<ProductoDetalle />} />
+        <Route path="Catalogo/producto/:id" element={<ProductoDetalle />} />
+        <Route
+          path="/FormularioServicio"
+          element={<FormularioServiciosPage />}
+        />
       </Routes>
     </Router>
   );

@@ -27,7 +27,7 @@ const productos = [
     detalle:
       "Acabado de poliuretano compuesto por polímeros uretánicos y acrílicos. Proporciona un excelente nivel de brillo y mayor durabilidad.  Es antideslizante y da un efecto piso mojado. Su transparencia característica, permite mantener el color original del piso.  Su exclusiva fórmula protege los pisos formando una capa impermeabilizante resistente a pisadas, rayones, marcas y suciedades, facilitando el mantenimiento diario de los pisos.  Ideal para alto tránsito, grandes áreas, pisos de mosaico, mármol, PVC, goma, flexiplast, plásticos, etc. y para ser utilizado con máquinas de alta velocidad (con un paño blanco o natural/porco).",
     imagen:
-      "https://s3-alpha-sig.figma.com/img/ee7f/e163/8792225593bf8799a5717739edb9e3bd?Expires=1743379200&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=pvK46a2ciMzq3-5VyRhz0r5RN0gXLLMAoFB2hMdQZLtaekwEENENkRGPL7-mM53L5p4enuEnQ7uFzd7hXkOk~kyuNfPkBVnjcsaY4pl1CUNdN0yENhhNaiTo37AuGamyfCLaaPndXvCffc8lBYaAGlYjsHwVal9dEr7j3srlghWxwXHBuVlyMxzcw62JnH5Z1ENExyzxxwoSnN7OebOXCV1dl2-ref4SRoHW9dg3YGHzHwoESQAS7BWYs~J0aRAxGnSqbUyMn8mkcxuM4b5Zck3jFqaKuBxDBeB~SFe7UJ2yt-i5tkRrJMvCxoYxNX3fVnxsYfJLUGYqJ8t7hPZUsA__",
+      "https://s3-alpha-sig.figma.com/img/ee7f/e163/8792225593bf8799a5717739edb9e3bd?Expires=1744588800&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=WtnSi5vDVqzCzKC2JR1u4tXQgv2QyWbY3HqkpGJiWML2BDTPU1uLw-S6wU-G0l2ZXLYvH0v29yBUDoL~CijApUVJ2k5~tQWOAUwMSe0rfoOA3VSnBCjBJT4geeX1xa0viEtX74DjwN2MRYqp9I4aKtCtxSWvC2lEkDXwq1JrbzPEsDNlBB584AKV8x8DWXZ8QjInZwteqaIikoXvtSLj6qUQYbq8i0KBDabA6BtoX5p-olO5emYTbJVmSTrqHGGpvNsRkUl6qG~US2EggYwXVdGtyp5Id1S3wgIMm7GMgjbD-QbDfWAZObcO7fV95bXl9DUURj2-vkGFPXTtFlhh7A__",
     categoriaId: 1,
   },
   {

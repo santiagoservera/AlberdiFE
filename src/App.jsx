@@ -8,10 +8,13 @@ import Catalogo from "./pages/Catalogo";
 
 import ProductoDetalle from "./pages/ProductoDetalle";
 import FormularioServiciosPage from "./pages/FormularioServiciosPage";
+import Carrito from "./components/Carrito";
+import FormularioProductosPage from "./pages/FormularioProductosPage";
 
 function App() {
   return (
     <Router>
+      <Carrito />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Nosotros" element={<Nosotros />} />
@@ -21,6 +24,10 @@ function App() {
         <Route
           path="/FormularioServicio"
           element={<FormularioServiciosPage />}
+        />
+        <Route
+          path="/FormularioProductos"
+          element={<FormularioProductosPage />}
         />
       </Routes>
     </Router>

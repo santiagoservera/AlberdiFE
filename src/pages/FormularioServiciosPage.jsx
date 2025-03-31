@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 
 const FormularioServiciosPage = () => {
   return (
-    <div>
+    <div className="bg-[#FBF7F4]">
       <Navbar />
       <FormularioServicios />
       <Footer />

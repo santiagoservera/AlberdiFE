@@ -1,10 +1,15 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+"use client";
+
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Input, Textarea } from "@heroui/input";
 import { Button } from "@heroui/react";
+import useCarritoStore from "../../store/useCarritoStore";
 
-const FormularioServicios = () => {
+const FormularioProductos = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { items, getTotal } = useCarritoStore();
   const servicioSeleccionado = location.state?.servicio || {}; // Evitar errores si no hay datos
 
   const [formData, setFormData] = useState({
@@ -24,24 +29,61 @@ const FormularioServicios = () => {
   };
 
   const handleSubmit = () => {
+    // Validar que todos los campos estén completos
+    const camposRequeridos = ["nombre", "apellido", "direccion", "telefono"];
+    const camposFaltantes = camposRequeridos.filter(
+      (campo) => !formData[campo]
+    );
+
+    if (camposFaltantes.length > 0) {
+      alert("Por favor complete todos los campos requeridos");
+      return;
+    }
+
     const datosFinales = {
       ...formData,
-      servicio: {
-        nombre: servicioSeleccionado.nombre || "N/A",
-        descripcion:
-          servicioSeleccionado.descripcion || "Descripción no disponible",
-      },
+      productos: items.map((item) => ({
+        id: item.id,
+        nombre: item.nombre,
+        precio: item.precio,
+        cantidad: item.quantity,
+        subtotal: item.precio * item.quantity,
+      })),
+      total: getTotal(),
     };
 
     console.log("Formulario enviado:", JSON.stringify(datosFinales, null, 2));
+
+    // Aquí podrías enviar los datos a tu backend
+    alert("¡Gracias por tu compra! Nos pondremos en contacto contigo pronto.");
+
+    // Redirigir al usuario a la página principal o de confirmación
+    navigate("/");
   };
+
+  // Si no hay productos en el carrito, redirigir al catálogo
+  if (items.length === 0) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-20">
+        <h2 className="text-2xl font-firelli text-textoVerde mb-4">
+          No hay productos en tu carrito
+        </h2>
+        <Button
+          onClick={() => navigate("/Catalogo")}
+          className="bg-[#4F6B5F] text-white py-2 rounded-full font-firelli px-4"
+        >
+          Ver catálogo
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full ">
       <div className="containerWidth flex-col flex lg:flex-row justify-between gap-5 pt-10 pb-20">
         <div className="flex flex-col md:w-1/2 bg-[#F4EAE2] p-4 gap-2">
           <h1 className="text-center font-firelli text-[#8BA99C] font-bold text-xl">
-            Formulario de Servicio:
+            Formulario de Compra:
           </h1>
           <div className="flex justify-between gap-2 text-textoVerde font-firelli font-bold">
             <Input
@@ -52,6 +94,7 @@ const FormularioServicios = () => {
               name="nombre"
               value={formData.nombre}
               onChange={handleChange}
+              required
             />
             <Input
               label="Apellido"
@@ -61,6 +104,7 @@ const FormularioServicios = () => {
               name="apellido"
               value={formData.apellido}
               onChange={handleChange}
+              required
             />
           </div>
           <Input
@@ -71,6 +115,7 @@ const FormularioServicios = () => {
             name="direccion"
             value={formData.direccion}
             onChange={handleChange}
+            required
           />
           <div className="flex justify-between gap-2 text-textoVerde font-firelli font-bold">
             <Input
@@ -90,10 +135,11 @@ const FormularioServicios = () => {
               name="telefono"
               value={formData.telefono}
               onChange={handleChange}
+              required
             />
           </div>
           <Textarea
-            label="Breve descripción de sus necesidades"
+            label="Breve descripción o comentarios adicionales"
             variant="bordered"
             className="bg-[#DEDEDE] rounded-lg font-bold font-firelli"
             name="descripcion"
@@ -105,26 +151,44 @@ const FormularioServicios = () => {
               className="bg-button text-white py-2 rounded-full font-firelli px-4"
               onClick={handleSubmit}
             >
-              Enviar Formulario
+              Finalizar Pedido
             </Button>
           </div>
         </div>
 
-        {/* Servicio seleccionado */}
+        {/* Productos seleccionados en el carrito */}
         <div className="md:w-1/2 flex flex-col justify-between gap-5">
           <div className="flex flex-col gap-5">
             <p className="font-firelli text-textoVerde text-2xl font-bold">
-              Seleccionaste el siguiente servicio:
+              Productos que has seleccionado:
             </p>
-            <p className="font-firelli text-textoVerde text-4xl font-bold">
-              {servicioSeleccionado.nombre || "N/A"}
-            </p>
-            <p className="font-firelli text-textoVerde text-lg font-bold">
-              {servicioSeleccionado.descripcion || "Descripción no disponible"}
-            </p>
+            <div className="bg-white p-4 rounded-lg shadow-md">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center justify-between border-b py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={item.imagen || "/placeholder.svg"}
+                      alt={item.nombre}
+                      className="w-16 h-16 object-cover rounded"
+                    />
+                    <div>
+                      <h3 className="font-firelli text-textoVerde font-bold">
+                        {item.nombre}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        Cantidad: {item.quantity}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="flex bg-[#4F6B5F] text-[#FBF7F4] font-firelli p-1 rounded-lg font-bold">
+          <div className="flex bg-[#4F6B5F] text-[#FBF7F4] font-firelli p-4 rounded-lg font-bold">
             <p>
               Una vez que completes el formulario, serás derivado a uno de
               nuestros encargados, quien se pondrá en contacto contigo para
@@ -138,4 +202,4 @@ const FormularioServicios = () => {
   );
 };
 
-export default FormularioServicios;
+export default FormularioProductos;

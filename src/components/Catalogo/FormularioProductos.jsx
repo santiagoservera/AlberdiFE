@@ -5,11 +5,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Input, Textarea } from "@heroui/input";
 import { Button } from "@heroui/react";
 import useCarritoStore from "../../store/useCarritoStore";
-
+import trash from "../../assets/trash.png";
 const FormularioProductos = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { items, getTotal } = useCarritoStore();
+  const {
+    items,
+    getTotal,
+    incrementQuantity,
+    decrementQuantity,
+    removeFromCart,
+    clearCart,
+  } = useCarritoStore();
   const servicioSeleccionado = location.state?.servicio || {}; // Evitar errores si no hay datos
 
   const [formData, setFormData] = useState({
@@ -47,15 +54,16 @@ const FormularioProductos = () => {
         nombre: item.nombre,
         precio: item.precio,
         cantidad: item.quantity,
-        subtotal: item.precio * item.quantity,
       })),
-      total: getTotal(),
     };
 
     console.log("Formulario enviado:", JSON.stringify(datosFinales, null, 2));
 
     // Aquí podrías enviar los datos a tu backend
     alert("¡Gracias por tu compra! Nos pondremos en contacto contigo pronto.");
+
+    // Limpiar el carrito después de completar la compra
+    clearCart();
 
     // Redirigir al usuario a la página principal o de confirmación
     navigate("/");
@@ -162,25 +170,52 @@ const FormularioProductos = () => {
             <p className="font-firelli text-textoVerde text-2xl font-bold">
               Productos que has seleccionado:
             </p>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="bg-white p-4 rounded-lg shadow-md h-full ">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between border-b py-3"
+                  className="flex items-center justify-between border-b py-3 w-full"
                 >
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={item.imagen || "/placeholder.svg"}
-                      alt={item.nombre}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div>
-                      <h3 className="font-firelli text-textoVerde font-bold">
-                        {item.nombre}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Cantidad: {item.quantity}
-                      </p>
+                  <div className="flex items-center gap-3  w-full">
+                    <div className="flex justify-between w-full items-center">
+                      <img
+                        src={item.imagen || "/placeholder.svg"}
+                        alt={item.nombre}
+                        className="w-[100px] h-[100px] object-cover rounded"
+                      />
+                      <div className="flex flex-col justify-between h-[100px]">
+                        <h3 className="font-firelli text-textoVerde font-bold">
+                          {item.nombre}
+                        </h3>
+
+                        <div className="flex bg-[#4F6B5F] font-firelli rounded-full text-white justify-around text-sm">
+                          <button
+                            className="cursor-pointer px-3"
+                            onClick={() => decrementQuantity(item.id)}
+                          >
+                            -
+                          </button>
+                          <p>{item.quantity}</p>
+                          <button
+                            className="cursor-pointer px-3"
+                            onClick={() => incrementQuantity(item.id)}
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className="">
+                        <button
+                          onClick={() => removeFromCart(item.id)}
+                          className="p-1 hover:bg-gray-100 rounded-full"
+                        >
+                          <img
+                            src={trash || "/placeholder.svg"}
+                            alt="trash"
+                            className="h-[20px] w-[20px]"
+                          />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

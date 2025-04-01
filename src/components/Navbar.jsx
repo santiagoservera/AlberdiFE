@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -13,7 +11,9 @@ import useCarritoStore from "../store/useCarritoStore";
 export const Navbar = () => {
   const { isOpen, openCarrito, getItemCount } = useCarritoStore();
   const location = useLocation();
-  const mostrarCarrito = location.pathname.startsWith("/Catalogo");
+  const mostrarCarrito =
+    location.pathname.includes("/Catalogo") ||
+    location.pathname === "/FormularioProductos";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -87,43 +87,47 @@ export const Navbar = () => {
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center relative">
-            <Button
-              onClick={openCarrito}
-              className="flex items-center font-bold bg-[#4F6B5F] rounded-full cursor-pointer py-2 relative"
-            >
-              <img
-                src={CarritoImg || "/placeholder.svg"}
-                alt="Carrito"
-                className="h-[30px] w-[30px]"
-              />
-            </Button>
-            {itemCount > 0 && (
-              <span className="absolute -top-2 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                {itemCount}
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="flex md:hidden gap-7 py-10">
-          <div className="md:hidden relative">
-            <div
-              onClick={openCarrito}
-              className="flex items-center font-bold bg-[#4F6B5F] rounded-full cursor-pointer p-2 relative"
-            >
-              <img
-                src={CarritoImg || "/placeholder.svg"}
-                alt="Carrito"
-                className="h-[50px] w-[50px]"
-              />
+          {mostrarCarrito && (
+            <div className="hidden md:flex items-center relative">
+              <Button
+                onClick={openCarrito}
+                className="flex items-center font-bold bg-[#4F6B5F] rounded-full cursor-pointer py-2 relative"
+              >
+                <img
+                  src={CarritoImg || "/placeholder.svg"}
+                  alt="Carrito"
+                  className="h-[30px] w-[30px]"
+                />
+              </Button>
               {itemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                <span className="absolute -top-2 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
                   {itemCount}
                 </span>
               )}
             </div>
-          </div>
+          )}
+        </div>
+
+        <div className="flex md:hidden gap-7 py-10">
+          {mostrarCarrito && (
+            <div className="md:hidden relative">
+              <div
+                onClick={openCarrito}
+                className="flex items-center font-bold bg-[#4F6B5F] rounded-full cursor-pointer p-2 relative"
+              >
+                <img
+                  src={CarritoImg || "/placeholder.svg"}
+                  alt="Carrito"
+                  className="h-[50px] w-[50px]"
+                />
+                {itemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+                    {itemCount}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
           <button onClick={toggleNavbar}>
             {isMenuOpen ? (
               <svg

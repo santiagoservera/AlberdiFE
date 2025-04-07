@@ -10,6 +10,8 @@ import ProductoDetalle from "./pages/ProductoDetalle";
 import FormularioServiciosPage from "./pages/FormularioServiciosPage";
 import Carrito from "./components/Carrito";
 import FormularioProductosPage from "./pages/FormularioProductosPage";
+import AdminLogin from "./pages/AdminLogin";
+import DashboardAdmin from "./pages/DashboardAdmin";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           path="/FormularioProductos"
           element={<FormularioProductosPage />}
         />
+        <Route path="/Admin" element={<AdminLogin />} />
+        <Route path="/Admin/dashboard" element={<DashboardAdmin />} />
       </Routes>
     </Router>
   );

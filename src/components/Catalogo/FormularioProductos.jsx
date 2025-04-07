@@ -47,26 +47,70 @@ const FormularioProductos = () => {
       return;
     }
 
-    const datosFinales = {
-      ...formData,
-      productos: items.map((item) => ({
-        id: item.id,
-        nombre: item.nombre,
-        precio: item.precio,
-        cantidad: item.quantity,
-      })),
-    };
+    const nombreCompleto = `${formData.nombre} ${formData.apellido}`;
+    const telefono = formData.telefono;
+    const direccion = formData.direccion;
 
-    console.log("Formulario enviado:", JSON.stringify(datosFinales, null, 2));
+    // Usar emojis directamente en el mensaje
+    const mensaje = `📦 *Nuevo Pedido*
+  
+  👤 *Cliente:* ${nombreCompleto}
+  📞 *Teléfono:* ${telefono}
+  📍 *Dirección:* ${direccion}
+  
+  📝 *Detalles del Pedido:*
+  
+  ${items
+    .map(
+      (item) => `🛒 *Producto:* ${item.nombre}
+  📦 *Cantidad:* ${item.quantity}`
+    )
+    .join("\n\n")}
+  
+  ${
+    formData.descripcion
+      ? `📌 *Detalles adicionales:* ${formData.descripcion}`
+      : "📌 *Sin detalles adicionales.*"
+  }
+  
+  💰 *¿Podrían confirmarme el valor total del pedido?*
+  
+  Aguardo su respuesta. ¡Muchas gracias!`;
 
-    // Aquí podrías enviar los datos a tu backend
-    alert("¡Gracias por tu compra! Nos pondremos en contacto contigo pronto.");
+    try {
+      // Usar la API oficial de WhatsApp
+      const numeroWhatsApp = "5492645850609"; // Número sin espacios ni caracteres especiales
+      const mensajeCodificado = encodeURIComponent(mensaje);
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensajeCodificado}`;
 
-    // Limpiar el carrito después de completar la compra
-    clearCart();
+      // Abrir WhatsApp en nueva ventana
+      window.open(urlWhatsApp, "_blank");
 
-    // Redirigir al usuario a la página principal o de confirmación
-    navigate("/");
+      console.log(
+        "Formulario enviado:",
+        JSON.stringify(
+          {
+            ...formData,
+            productos: items,
+          },
+          null,
+          2
+        )
+      );
+
+      alert(
+        "¡Pedido enviado con éxito! Pronto recibirás una confirmación por WhatsApp."
+      );
+
+      // Limpiar carrito y redirigir
+      clearCart();
+      navigate("/");
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+      alert(
+        "Hubo un problema al enviar tu pedido. Por favor intenta nuevamente."
+      );
+    }
   };
 
   // Si no hay productos en el carrito, redirigir al catálogo

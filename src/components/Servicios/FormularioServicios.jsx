@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Input, Textarea } from "@heroui/input";
 import { Button } from "@heroui/react";
+import { ToastContainer, toast } from "react-toastify";
+
+import { useNavigate } from "react-router-dom";
 
 const FormularioServicios = () => {
   const location = useLocation();
   const servicioSeleccionado = location.state?.servicio || {}; // Evitar errores si no hay datos
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -24,20 +27,79 @@ const FormularioServicios = () => {
   };
 
   const handleSubmit = () => {
+    // Validar que todos los campos estén completos
+    const camposRequeridos = ["nombre", "apellido", "telefono"];
+    const camposFaltantes = camposRequeridos.filter(
+      (campo) => !formData[campo]
+    );
+
+    if (camposFaltantes.length > 0) {
+      toast.error("Por favor complete todos los campos requeridos.");
+      return;
+    }
+
     const datosFinales = {
       ...formData,
       servicio: {
-        nombre: servicioSeleccionado.nombre || "N/A",
-        descripcion:
-          servicioSeleccionado.descripcion || "Descripción no disponible",
+        nombre: servicioSeleccionado?.nombre || "N/A",
+        descripcion: servicioSeleccionado?.descripcion || "No disponible",
       },
     };
 
-    console.log("Formulario enviado:", JSON.stringify(datosFinales, null, 2));
+    const nombreCompleto = `${formData.nombre} ${formData.apellido}`;
+    const telefono = formData.telefono;
+    const descripcionAdicional =
+      formData.descripcion || "Sin detalles adicionales.";
+
+    const mensaje = `🛠️ *Solicitud de Servicio*
+  
+👤 *Cliente:* ${nombreCompleto}
+📞 *Teléfono:* ${telefono}
+
+📝 *Detalles del Servicio:*
+🔧 *Servicio:* ${datosFinales.servicio.nombre}
+📌 *Descripción:* ${datosFinales.servicio.descripcion}
+
+📋 *Detalles adicionales:* ${descripcionAdicional}
+
+✅ *¿Podrían confirmarme la disponibilidad y el costo?*
+
+Aguardo su respuesta. ¡Muchas gracias!`;
+
+    try {
+      const numeroWhatsApp = "5492645850609";
+      const mensajeCodificado = encodeURIComponent(mensaje);
+      const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${mensajeCodificado}`;
+
+      // Abrir WhatsApp en nueva ventana
+      window.open(urlWhatsApp, "_blank");
+
+      console.log("Formulario enviado:", JSON.stringify(datosFinales, null, 2));
+
+      // Mostrar mensaje de éxito con Toastify
+      toast.success("✅ Servicio solicitado con éxito!");
+
+      // Limpiar formulario
+      setFormData({
+        nombre: "",
+        apellido: "",
+        telefono: "",
+        descripcion: "",
+      });
+
+      // Redirigir a "/"
+      setTimeout(() => {
+        navigate("/");
+      }, 2000); // Pequeño delay para que se vea el mensaje de éxito
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+      toast.error("❌ Hubo un problema al enviar tu solicitud.");
+    }
   };
 
   return (
     <div className="w-full ">
+      <ToastContainer />
       <div className="containerWidth flex-col flex lg:flex-row justify-between gap-5 pt-10 pb-20">
         <div className="flex flex-col md:w-1/2 bg-[#F4EAE2] p-4 gap-2">
           <h1 className="text-center font-firelli text-[#8BA99C] font-bold text-xl">
@@ -57,7 +119,7 @@ const FormularioServicios = () => {
               label="Apellido"
               type="text"
               variant="bordered"
-              className="bg-[#DEDEDE] rounded-lg"
+              className="bg-[#DEDEDE] rounded-lg  font-bold font-firelli"
               name="apellido"
               value={formData.apellido}
               onChange={handleChange}
@@ -67,7 +129,7 @@ const FormularioServicios = () => {
             label="Dirección"
             type="text"
             variant="bordered"
-            className="bg-[#DEDEDE] rounded-lg font-bold font-firelli"
+            className="bg-[#DEDEDE] rounded-lg font-bold font-firelli text-textoVerde"
             name="direccion"
             value={formData.direccion}
             onChange={handleChange}
@@ -95,7 +157,7 @@ const FormularioServicios = () => {
           <Textarea
             label="Breve descripción de sus necesidades"
             variant="bordered"
-            className="bg-[#DEDEDE] rounded-lg font-bold font-firelli"
+            className="bg-[#DEDEDE] rounded-lg font-bold font-firelli text-textoVerde"
             name="descripcion"
             value={formData.descripcion}
             onChange={handleChange}

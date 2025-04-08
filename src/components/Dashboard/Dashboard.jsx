@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import SeccionProductos from "./SeccionProductos";
+
 const Dashboard = () => {
   const [seccionActual, setSeccionActual] = useState("Productos");
 
@@ -8,7 +10,7 @@ const Dashboard = () => {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#4F6B5F] text-white p-4">
+      <aside className="md:w-64 bg-[#4F6B5F] text-white p-4">
         <h2 className="text-xl font-bold mb-4">Panel</h2>
         <ul>
           {secciones.map((seccion) => (
@@ -27,12 +29,9 @@ const Dashboard = () => {
 
       {/* Contenido principal */}
       <main className="flex-1 p-6">
-        <h1 className="text-2xl font-bold mb-4">{seccionActual}</h1>
         <div>
-          {/* Aquí podrías renderizar contenido diferente según la sección */}
-          <p>
-            Aquí se muestra el contenido de <strong>{seccionActual}</strong>.
-          </p>
+          {/* Seccion Productos */}
+          {seccionActual === "Productos" && <SeccionProductos />}
         </div>
       </main>
     </div>

@@ -17,6 +17,8 @@ export const Navbar = () => {
 
   const mostrarItems = !location.pathname.includes("/Admin");
 
+  const bgColor = location.pathname.includes("/Admin") ? "#4F6B5F" : "";
+  const isDashboard = location.pathname === "/Admin/Dashboard";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -37,9 +39,16 @@ export const Navbar = () => {
   const itemCount = getItemCount();
 
   return (
-    <header className="w-full z-10 bg-transparent relative ">
+    <header
+      className="w-full z-10 relative "
+      style={{ backgroundColor: bgColor }}
+    >
       <nav className="containerWidth flex h-full w-full gap-3 justify-between ">
-        <div className="flex h-full py-[25px] gap-1 ">
+        <div
+          className={`flex h-full py-[25px] gap-1 ${
+            isDashboard ? "bg-white rounded-full px-5" : ""
+          }`}
+        >
           <Link to="/" className="flex items-center gap-2">
             <img
               src={logoAlberdi || "/placeholder.svg"}

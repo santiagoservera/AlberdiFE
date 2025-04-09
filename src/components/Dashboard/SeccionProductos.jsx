@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import imgProducto from "../../assets/imgProducto.png";
 import {
   Modal,
@@ -9,71 +9,10 @@ import {
   Button,
   useDisclosure,
   Input,
+  Select,
+  Textarea,
 } from "@heroui/react";
-
-const productos = [
-  {
-    id: 1,
-    nombre: "Producto 1",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-  {
-    id: 2,
-    nombre: "Producto 2",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-
-  {
-    id: 3,
-    nombre: "Producto 3",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-
-  {
-    id: 4,
-    nombre: "Producto 4",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-  {
-    id: 5,
-    nombre: "Producto 5",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-
-  {
-    id: 6,
-    nombre: "Producto 6",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-
-  {
-    id: 7,
-    nombre: "Producto 7",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-
-  {
-    id: 8,
-    nombre: "Producto 8",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-];
+import ModalProducto from "./ModalProducto";
 
 const handleAddImageClick = () => {
   const inputElement = document.getElementById("productPictureInput");
@@ -89,9 +28,79 @@ const handleImageChange = (e) => {
     imagen1: file,
   }));
 };
+
 const SeccionProductos = () => {
   const [seccionActual, setSeccionActual] = useState("Productos");
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modoModal, setModoModal] = useState("crear");
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [productos, setProductos] = useState([
+    {
+      id: 1,
+      nombre: "Desinfectante Multiusos",
+      descripcion: "Elimina el 99.9% de bacterias en superficies.",
+      detalle: "Ideal para baños, cocinas y pisos.",
+      categoria: "Limpieza",
+      imagen: imgProducto,
+    },
+    {
+      id: 2,
+      nombre: "Detergente Líquido",
+      descripcion: "Eficaz contra grasa difícil.",
+      detalle: "Para vajilla, utensilios y superficies de cocina.",
+      categoria: "Limpieza",
+      imagen: imgProducto,
+    },
+    {
+      id: 3,
+      nombre: "Limpiavidrios",
+      descripcion: "Deja los vidrios y espejos relucientes.",
+      detalle: "Fórmula sin marcas ni residuos.",
+      categoria: "Vidrios",
+      imagen: imgProducto,
+    },
+    {
+      id: 4,
+      nombre: "Limpiador Perfumado",
+      descripcion: "Limpieza profunda con fragancia duradera.",
+      detalle: "Disponible en lavanda, cítrico y floral.",
+      categoria: "Limpieza",
+      imagen: imgProducto,
+    },
+    {
+      id: 5,
+      nombre: "Jabón para manos",
+      descripcion: "Suave con la piel, elimina gérmenes.",
+      detalle: "Apto para uso frecuente.",
+      categoria: "Higiene personal",
+      imagen: imgProducto,
+    },
+    {
+      id: 6,
+      nombre: "Alcohol en gel",
+      descripcion: "Desinfección rápida sin agua.",
+      detalle: "Ideal para manos y superficies pequeñas.",
+      categoria: "Higiene personal",
+      imagen: imgProducto,
+    },
+    {
+      id: 7,
+      nombre: "Limpiador de pisos",
+      descripcion: "Para cerámica, mármol y madera.",
+      detalle: "No requiere enjuague.",
+      categoria: "Pisos",
+      imagen: imgProducto,
+    },
+    {
+      id: 8,
+      nombre: "Desengrasante Industrial",
+      descripcion: "Poderoso contra grasa incrustada.",
+      detalle: "Uso profesional en cocinas y talleres.",
+      categoria: "Industrial",
+      imagen: imgProducto,
+    },
+  ]);
+
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
@@ -100,73 +109,78 @@ const SeccionProductos = () => {
 
     imagen1: null,
   });
+
+  // Funciones del modal
+  const abrirModalEditar = (producto) => {
+    console.log("Producto recibido:", producto); // ← esto
+    setModoModal("editar");
+    setProductoSeleccionado(producto);
+    setIsModalOpen(true);
+  };
+  const handleEditarProducto = (producto) => {
+    setProductoSeleccionado(producto); // <-- le pasás todo el objeto
+    setModo("editar");
+    setIsModalOpen(true);
+  };
+
+  const abrirModalCrear = () => {
+    setModoModal("crear");
+    setProductoSeleccionado(null);
+    setIsModalOpen(true);
+  };
+  const handleGuardar = (formData) => {
+    if (modoModal === "crear") {
+      const nuevoProducto = {
+        id: productos.length + 1, // o usar un generador de ID
+        nombre: formData.nombre,
+        descripcion: formData.descripcion,
+        detalle: formData.detalle,
+        categoria: formData.categoria,
+        imagen: imgProducto, // o podés usar la imagen subida (formData.imagen1)
+      };
+
+      setProductos((prev) => [...prev, nuevoProducto]);
+      console.log("Producto nuevo:", nuevoProducto);
+    } else {
+      const productoActualizado = {
+        ...productoSeleccionado, // mantenés el ID original
+        nombre: formData.nombre,
+        descripcion: formData.descripcion,
+        detalle: formData.detalle,
+        categoria: formData.categoria,
+        imagen: productoSeleccionado.imagen, // o formData.imagen1 si querés actualizar
+      };
+
+      setProductos((prev) =>
+        prev.map((p) =>
+          p.id === productoActualizado.id ? productoActualizado : p
+        )
+      );
+      console.log("Producto actualizado:", productoActualizado);
+    }
+
+    // Cerrar modal y limpiar selección
+    setIsModalOpen(false);
+    setProductoSeleccionado(null);
+  };
+  //Fin funciones modal
+
   return (
     <div>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent className="font-firelli">
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Agregar producto
-              </ModalHeader>
-              <ModalBody>
-                <Input placeholder="Nombre del producto" />
-                <Input placeholder="Descripcion del producto" />
-                <div className="bg-white text-black w-full lg:h-[380px] rounded-lg shadow-[0px_4px_4px_0px_#00000040]  mb-5 lg:mb-0">
-                  <div className="w-[95%] mx-auto">
-                    <div className="py-3">
-                      <p className="lg:text-xl font-bold">Fotos</p>
-                    </div>
-                    <div className="py-10 lg:py-0">
-                      {formData.imagen1 ? (
-                        <img
-                          src={URL.createObjectURL(formData.imagen1)}
-                          alt="Preview"
-                          className="lg:w-[250px] lg:h-[250px] rounded-lg shadow-[0px_4px_4px_0px_#00000040]"
-                        />
-                      ) : (
-                        <div className="lg:flex lg:flex-col border border-dashed border-black lg:w-[250px] lg:h-[250px] lg:justify-center lg:items-center gap-3 rounded-lg shadow-[0px_4px_4px_0px_#00000040]">
-                          <div>
-                            <label
-                              onClick={handleAddImageClick}
-                              className="cursor-pointer text-center lg:px-2 border border-black rounded-full text-3xl items-center"
-                            >
-                              +
-                            </label>
-                            <input
-                              required
-                              id="productPictureInput"
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageChange}
-                              style={{ display: "none" }}
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ModalProducto
+        isOpen={isModalOpen}
+        onOpenChange={() => setIsModalOpen(false)}
+        modo={modoModal}
+        producto={productoSeleccionado}
+        onGuardar={handleGuardar}
+      />
       {seccionActual === "Productos" && (
         <div className="flex-1 md:p-6  font-firelli">
           <div className="flex md:flex-row flex-col justify-between items-center mb-6 gap-3">
             <h2 className="text-2xl font-bold text-[#4F6B5F]">Productos</h2>
             <Button
               className="bg-[#4F6B5F] md:text-sm text-xl text-white px-4 py-2 rounded-full hover:bg-[#3e574c] "
-              onPress={onOpen}
+              onPress={abrirModalCrear}
             >
               + Agregar Producto
             </Button>
@@ -195,9 +209,7 @@ const SeccionProductos = () => {
                   <div className="flex justify-between md:flex-row flex-col gap-2 mt-4">
                     <Button
                       className="md:text-sm text-xl bg-[#4F6B5F] text-white"
-                      onClick={() =>
-                        console.log("Editar producto", producto.id)
-                      }
+                      onPress={() => abrirModalEditar(producto)}
                     >
                       Editar
                     </Button>

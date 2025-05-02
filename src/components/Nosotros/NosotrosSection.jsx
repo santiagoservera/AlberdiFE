@@ -1,5 +1,5 @@
 import React from "react";
-import imgNosotros from "../../assets/imagenNosotros.png";
+import Nosotros from "../../assets/Nosotros.jpg";
 import DivisorHome from "../Home/DivisorHome";
 
 const NosotrosSection = () => {
@@ -18,8 +18,8 @@ const NosotrosSection = () => {
             mantenimiento de espacios verdes y fumigaciones.
           </p>
         </div>
-        <div>
-          <img src={imgNosotros} alt="" />
+        <div className="flex  w-full">
+          <img src={Nosotros} alt="" className="rounded-lg h-[700px] w-full" />
         </div>
         <div className="flex md:flex-row-reverse flex-col  justify-between py-10">
           <p className="font-bold md:text-end font-firelli text-textoVerde text-6xl text-center">

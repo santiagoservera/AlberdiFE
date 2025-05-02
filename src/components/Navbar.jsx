@@ -7,6 +7,7 @@ import CarritoImg from "../assets/Carrito.png";
 import { Button } from "@heroui/react";
 import Carrito from "../components/Carrito";
 import useCarritoStore from "../store/useCarritoStore";
+import { Tooltip } from "@nextui-org/react";
 
 export const Navbar = () => {
   const { isOpen, openCarrito, getItemCount } = useCarritoStore();
@@ -46,14 +47,16 @@ export const Navbar = () => {
       <nav className="containerWidth flex h-full w-full gap-3 justify-between ">
         <div
           className={`flex h-full py-[25px] gap-1 ${
-            isDashboard ? "bg-white rounded-full px-5" : ""
+            isDashboard ? "bg-white rounded-full px-5 mt-2" : ""
           }`}
         >
           <Link to="/" className="flex items-center gap-2">
             <img
               src={logoAlberdi || "/placeholder.svg"}
-              alt="suinfi-logo"
-              className="h-[60px] w-[62px]"
+              // className="h-[60px] w-[62px]"
+              className={
+                isDashboard ? "h-[50px] w-[52px]" : "h-[60px] w-[62px]"
+              }
             />
           </Link>
         </div>
@@ -97,6 +100,30 @@ export const Navbar = () => {
                 className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
               >
                 Nosotros
+              </Link>
+            </div>
+            <div className="hidden md:flex items-center font-bold ">
+              <Link
+                to="/Admin"
+                className="hover:cursor-pointer text-lg hover:rounded-full hover:text-[#F4EAE2] p-2"
+              >
+                <Tooltip content="Admin">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="none" stroke="#4F6B5F" stroke-width="1.5">
+                      <circle cx="12" cy="9" r="3" />
+                      <circle cx="12" cy="12" r="10" />
+                      <path
+                        stroke-linecap="round"
+                        d="M17.97 20c-.16-2.892-1.045-5-5.97-5s-5.81 2.108-5.97 5"
+                      />
+                    </g>
+                  </svg>
+                </Tooltip>
               </Link>
             </div>
 

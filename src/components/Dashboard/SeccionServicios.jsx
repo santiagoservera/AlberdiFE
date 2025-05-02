@@ -116,7 +116,7 @@ export default function SeccionServicios() {
 
   return (
     <section className="p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex md:flex-row flex-col justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold font-firelli text-textoVerde">
           Servicios
         </h2>
@@ -153,7 +153,9 @@ export default function SeccionServicios() {
                 <h3 className="text-lg font-bold text-gray-800 mb-2">
                   {servicio.nombre}
                 </h3>
-                <p className="text-sm text-gray-600">{servicio.descripcion}</p>
+                <p className="text-sm text-gray-600 truncate">
+                  {servicio.descripcion}
+                </p>
               </div>
             </div>
 

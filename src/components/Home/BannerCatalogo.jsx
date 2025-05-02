@@ -25,7 +25,7 @@ function BannerCatalogo() {
           <img
             src={imgBannerCatalogo}
             alt="banner"
-            className="img-banner-catalogo h-[650px]"
+            className="img-banner-catalogo h-[500px] md:h-[650px]"
           />
         </div>
       </div>

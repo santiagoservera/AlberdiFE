@@ -208,7 +208,10 @@ const SeccionPedidos = () => {
         <h2 className="text-2xl font-semibold font-firelli text-textoVerde">
           Pedidos
         </h2>
-        <Button color="success" onClick={openCreateModal}>
+        <Button
+          className="bg-[#4F6B5F] text-white font-firelli"
+          onClick={openCreateModal}
+        >
           Nuevo Pedido
         </Button>
       </div>

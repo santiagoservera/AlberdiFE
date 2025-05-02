@@ -104,7 +104,7 @@ export const Navbar = () => {
             </div>
             <div className="hidden md:flex items-center font-bold ">
               <Link
-                to="/Admin"
+                to="/Admin/Dashboard"
                 className="hover:cursor-pointer text-lg hover:rounded-full hover:text-[#F4EAE2] p-2"
               >
                 <Tooltip content="Admin">

@@ -127,6 +127,17 @@ const SeccionPedidos = () => {
     });
   };
 
+  const handleTipoChange = (tipo) => {
+    setNewPedido({
+      ...newPedido,
+      tipo,
+      // Resetear campos específicos según el tipo
+      servicioId: tipo === "Servicio" ? "" : undefined,
+      productos: tipo === "Producto" ? [] : undefined,
+      pedido: "",
+    });
+  };
+
   const handleServicioChange = (e) => {
     const servicioId = e.target.value;
     const servicio = Servicios.find(
@@ -140,6 +151,24 @@ const SeccionPedidos = () => {
         pedido: servicio.nombre,
       });
     }
+  };
+
+  const handleProductosChange = (productos) => {
+    // Crear un resumen del pedido basado en los productos seleccionados
+    let resumen = "";
+    if (productos && productos.length > 0) {
+      if (productos.length === 1) {
+        resumen = `${productos[0].cantidad} ${productos[0].nombre}`;
+      } else {
+        resumen = `${productos.length} productos diferentes`;
+      }
+    }
+
+    setNewPedido({
+      ...newPedido,
+      productos,
+      pedido: resumen || "Pedido de productos",
+    });
   };
 
   const handleEditServicioChange = (e) => {
@@ -226,6 +255,8 @@ const SeccionPedidos = () => {
         newPedido={newPedido}
         handleNewPedidoChange={handleNewPedidoChange}
         handleServicioChange={handleServicioChange}
+        handleProductosChange={handleProductosChange}
+        handleTipoChange={handleTipoChange}
         createPedido={createPedido}
       />
     </section>

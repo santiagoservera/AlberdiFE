@@ -3,11 +3,12 @@ import React, { useState } from "react";
 import SeccionProductos from "./SeccionProductos";
 import SeccionServicios from "./SeccionServicios";
 import SeccionPedidos from "./SeccionPedidos";
+import SeccionCategorias from "./SeccionCategorias";
 
 const Dashboard = () => {
   const [seccionActual, setSeccionActual] = useState("Productos");
 
-  const secciones = ["Productos", "Servicios", "Pedidos"];
+  const secciones = ["Productos", "Servicios", "Pedidos", "Categorias"];
 
   return (
     <div className="flex min-h-screen">
@@ -38,6 +39,8 @@ const Dashboard = () => {
           {seccionActual === "Servicios" && <SeccionServicios />}
           {/* Seccion Pedidos */}
           {seccionActual === "Pedidos" && <SeccionPedidos />}
+          {/* Seccion Categorias */}
+          {seccionActual === "Categorias" && <SeccionCategorias />}
         </div>
       </main>
     </div>

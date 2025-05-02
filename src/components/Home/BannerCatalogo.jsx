@@ -1,5 +1,5 @@
 import React from "react";
-import imgBannerCatalogo from "../../assets/imgBannerCatalogo.png";
+import imgBannerCatalogo from "../../assets/imgBannerCatalogorr.png";
 import { Link } from "react-router-dom";
 function BannerCatalogo() {
   return (
@@ -21,11 +21,11 @@ function BannerCatalogo() {
             </div>
           </Link>
         </div>
-        <div className="mt-[-35px]">
+        <div className="mt-[-35px] ">
           <img
             src={imgBannerCatalogo}
             alt="banner"
-            className="img-banner-catalogo"
+            className="img-banner-catalogo h-[650px]"
           />
         </div>
       </div>

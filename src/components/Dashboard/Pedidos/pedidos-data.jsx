@@ -37,6 +37,74 @@ export const Servicios = [
   },
 ];
 
+// Datos de productos
+export const Productos = [
+  {
+    id: 1,
+    nombre: "Desinfectante Multiusos",
+    descripcion: "Elimina el 99.9% de bacterias en superficies.",
+    detalle: "Ideal para baños, cocinas y pisos.",
+    categoria: "Limpieza",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 2,
+    nombre: "Detergente Líquido",
+    descripcion: "Eficaz contra grasa difícil.",
+    detalle: "Para vajilla, utensilios y superficies de cocina.",
+    categoria: "Limpieza",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 3,
+    nombre: "Limpiavidrios",
+    descripcion: "Deja los vidrios y espejos relucientes.",
+    detalle: "Fórmula sin marcas ni residuos.",
+    categoria: "Vidrios",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 4,
+    nombre: "Limpiador Perfumado",
+    descripcion: "Limpieza profunda con fragancia duradera.",
+    detalle: "Disponible en lavanda, cítrico y floral.",
+    categoria: "Limpieza",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 5,
+    nombre: "Jabón para manos",
+    descripcion: "Suave con la piel, elimina gérmenes.",
+    detalle: "Apto para uso frecuente.",
+    categoria: "Higiene personal",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 6,
+    nombre: "Alcohol en gel",
+    descripcion: "Desinfección rápida sin agua.",
+    detalle: "Ideal para manos y superficies pequeñas.",
+    categoria: "Higiene personal",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 7,
+    nombre: "Limpiador de pisos",
+    descripcion: "Para cerámica, mármol y madera.",
+    detalle: "No requiere enjuague.",
+    categoria: "Pisos",
+    imagen: "/producto.jpg",
+  },
+  {
+    id: 8,
+    nombre: "Desengrasante Industrial",
+    descripcion: "Poderoso contra grasa incrustada.",
+    detalle: "Uso profesional en cocinas y talleres.",
+    categoria: "Industrial",
+    imagen: "/producto.jpg",
+  },
+];
+
 // Sample data
 export const PedidosIniciales = [
   {
@@ -63,6 +131,10 @@ export const PedidosIniciales = [
     telefono: "987654321",
     nombre: "María",
     apellido: "Gomez",
+    productos: [
+      { productoId: 1, cantidad: 2, nombre: "Desinfectante Multiusos" },
+      { productoId: 3, cantidad: 1, nombre: "Limpiavidrios" },
+    ],
   },
   {
     id: 3,
@@ -88,6 +160,10 @@ export const PedidosIniciales = [
     telefono: "2233445566",
     nombre: "Lucía",
     apellido: "Martínez",
+    productos: [
+      { productoId: 5, cantidad: 5, nombre: "Jabón para manos" },
+      { productoId: 6, cantidad: 10, nombre: "Alcohol en gel" },
+    ],
   },
   {
     id: 5,
@@ -113,6 +189,10 @@ export const PedidosIniciales = [
     telefono: "4455667788",
     nombre: "Sofía",
     apellido: "López",
+    productos: [
+      { productoId: 5, cantidad: 3, nombre: "Jabón para manos" },
+      { productoId: 7, cantidad: 2, nombre: "Limpiador de pisos" },
+    ],
   },
   {
     id: 7,
@@ -195,4 +275,15 @@ export const pedidoVacio = {
   nombre: "",
   apellido: "",
   servicioId: "",
+  productos: [],
 };
+
+// Categorías de productos para filtros
+export const categoriasFiltro = [
+  { key: "", value: "Todas las categorías" },
+  { key: "Limpieza", value: "Limpieza" },
+  { key: "Vidrios", value: "Vidrios" },
+  { key: "Higiene personal", value: "Higiene personal" },
+  { key: "Pisos", value: "Pisos" },
+  { key: "Industrial", value: "Industrial" },
+];

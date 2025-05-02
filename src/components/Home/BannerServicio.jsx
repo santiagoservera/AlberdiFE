@@ -1,5 +1,5 @@
 import React from "react";
-import imgBanner from "../../assets/imgBanner.png";
+import imgBannerServicio from "../../assets/imgBannerServicio.png";
 import { Link } from "react-router-dom";
 function BannerServicio() {
   return (
@@ -25,7 +25,11 @@ function BannerServicio() {
           </Link>
         </div>
         <div className="md:w-[400px]">
-          <img src={imgBanner} alt="banner" className="w-full" />
+          <img
+            src={imgBannerServicio}
+            alt="banner"
+            className="w-full rounded-lg"
+          />
         </div>
       </div>
     </div>

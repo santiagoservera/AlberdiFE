@@ -145,6 +145,8 @@ export const PedidosTable = ({
       }
       classNames={{
         wrapper: "min-h-[222px]",
+        table: "min-w-[800px]", // Asegura un ancho mínimo para permitir scroll horizontal
+        base: "overflow-x-auto", // Habilita scroll horizontal cuando sea necesario
       }}
     >
       <TableHeader columns={columns}>
@@ -152,6 +154,16 @@ export const PedidosTable = ({
           <TableColumn
             key={column.uid}
             align={column.uid === "acciones" ? "center" : "start"}
+            className={
+              // Ocultar columnas menos importantes en pantallas pequeñas
+              column.uid === "direccion"
+                ? "hidden md:table-cell"
+                : column.uid === "telefono"
+                ? "hidden sm:table-cell"
+                : column.uid === "fecha"
+                ? "hidden sm:table-cell"
+                : ""
+            }
           >
             {column.name}
           </TableColumn>
@@ -161,7 +173,20 @@ export const PedidosTable = ({
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey.toString())}</TableCell>
+              <TableCell
+                className={
+                  // Aplicar las mismas reglas de visibilidad a las celdas
+                  columnKey === "direccion"
+                    ? "hidden md:table-cell"
+                    : columnKey === "telefono"
+                    ? "hidden sm:table-cell"
+                    : columnKey === "fecha"
+                    ? "hidden sm:table-cell"
+                    : ""
+                }
+              >
+                {renderCell(item, columnKey.toString())}
+              </TableCell>
             )}
           </TableRow>
         )}

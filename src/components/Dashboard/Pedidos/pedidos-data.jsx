@@ -215,9 +215,9 @@ export const columns = [
   { name: "PEDIDO", uid: "pedido" },
   { name: "TIPO", uid: "tipo" },
   { name: "ESTADO", uid: "estado" },
-  { name: "FECHA", uid: "fecha" },
-  { name: "DIRECCIÓN", uid: "direccion" },
-  { name: "TELÉFONO", uid: "telefono" },
+  { name: "FECHA", uid: "fecha" }, // Se ocultará en móviles
+  { name: "DIRECCIÓN", uid: "direccion" }, // Se ocultará en móviles
+  { name: "TELÉFONO", uid: "telefono" }, // Se ocultará en móviles
   { name: "ACCIONES", uid: "acciones" },
 ];
 

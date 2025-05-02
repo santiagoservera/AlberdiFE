@@ -170,11 +170,14 @@ export default function SeccionCategorias() {
 
   return (
     <section className="p-6">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex md:flex-row flex-col justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold font-firelli text-textoVerde">
           Categorías
         </h2>
-        <Button color="success" onClick={openCreateCategoriaModal}>
+        <Button
+          className="bg-[#4F6B5F] text-white font-firelli"
+          onClick={openCreateCategoriaModal}
+        >
           Agregar nueva categoría
         </Button>
       </div>
@@ -278,7 +281,6 @@ export default function SeccionCategorias() {
                             openEditSubcategoriaModal(categoria, subcategoria)
                           }
                         >
-                          <div className="w-10 h-10 rounded-md overflow-hidden"></div>
                           <div>
                             <p className="text-sm font-medium">
                               {subcategoria.nombre}
@@ -287,7 +289,7 @@ export default function SeccionCategorias() {
                         </div>
 
                         {/* Botones de acción para subcategoría */}
-                        <div className="opacity-0 group-hover/sub:opacity-100 transition-opacity duration-300 flex gap-1">
+                        <div className=" flex gap-1">
                           <Tooltip content="Editar subcategoría">
                             <Button
                               isIconOnly

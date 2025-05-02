@@ -170,7 +170,10 @@ export const SubcategoriaModal = ({
               <Button color="danger" variant="light" onPress={onClose}>
                 Cancelar
               </Button>
-              <Button color="success" onPress={handleSubmit}>
+              <Button
+                className="bg-[#4F6B5F] text-white font-firelli"
+                onPress={handleSubmit}
+              >
                 {modo === "crear"
                   ? "Guardar Subcategoría"
                   : "Actualizar Subcategoría"}

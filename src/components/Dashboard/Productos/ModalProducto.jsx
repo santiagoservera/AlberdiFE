@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import {
   Modal,
@@ -48,6 +50,7 @@ const ModalProducto = ({
   useEffect(() => {
     if (isOpen) {
       if (modo === "editar" && producto) {
+        console.log("Producto a editar:", producto);
         setFormData({
           nombre: producto.nombre || "",
           descripcion: producto.descripcion || "",
@@ -58,18 +61,18 @@ const ModalProducto = ({
         });
 
         // Establecer la categoría seleccionada basada en la subcategoría del producto
-        if (producto.subcategoria && producto.subcategoria.categoria) {
-          setCategoriaSeleccionada(
-            producto.subcategoria.categoria.id.toString()
-          );
+        if (producto.subcategoria) {
+          // Obtener el categoria_id de la subcategoría
+          const categoriaId = producto.subcategoria.categoria_id;
+          if (categoriaId) {
+            setCategoriaSeleccionada(categoriaId.toString());
 
-          // Filtrar subcategorías para esta categoría
-          const subcatsDeCategoria =
-            categorias.find(
-              (cat) => cat.id === producto.subcategoria.categoria.id
-            )?.subcategorias || [];
-
-          setSubcategorias(subcatsDeCategoria);
+            // Filtrar subcategorías para esta categoría
+            const subcatsDeCategoria =
+              categorias.find((cat) => cat.id === categoriaId)?.subcategorias ||
+              [];
+            setSubcategorias(subcatsDeCategoria);
+          }
         }
 
         // Establecer vista previa de imagen si existe
@@ -202,6 +205,16 @@ const ModalProducto = ({
     onOpenChange(false);
   };
 
+  // Función para depuración
+  const logFormState = () => {
+    console.log("Estado actual del formulario:", {
+      formData,
+      categoriaSeleccionada,
+      subcategorias,
+      producto,
+    });
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -328,7 +341,7 @@ const ModalProducto = ({
                           </option>
                           {Array.isArray(categorias) &&
                             categorias.map((cat) => (
-                              <option key={cat.id} value={cat.id}>
+                              <option key={cat.id} value={cat.id.toString()}>
                                 {cat.nombre}
                               </option>
                             ))}
@@ -360,7 +373,10 @@ const ModalProducto = ({
                           </option>
                           {Array.isArray(subcategorias) &&
                             subcategorias.map((subcat) => (
-                              <option key={subcat.id} value={subcat.id}>
+                              <option
+                                key={subcat.id}
+                                value={subcat.id.toString()}
+                              >
                                 {subcat.nombre}
                               </option>
                             ))}

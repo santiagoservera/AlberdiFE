@@ -30,7 +30,7 @@ export const CategoriaModal = ({
     descripcion: false,
   });
 
-  // Cargar datos si estamos en modo editar
+  // Cargar datos si estamos en modo editar o limpiar si estamos en modo crear
   useEffect(() => {
     if (modo === "editar" && categoriaEditar) {
       setFormData({
@@ -45,7 +45,7 @@ export const CategoriaModal = ({
         descripcion: "",
       });
     }
-  }, [modo, categoriaEditar]);
+  }, [modo, categoriaEditar, isOpen]); // Añadido isOpen como dependencia para que se ejecute cuando el modal se abre
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,14 +90,29 @@ export const CategoriaModal = ({
     // Guardar la categoría
     onSave(categoriaData);
 
+    // Limpiar el formulario antes de cerrar
+    setFormData({
+      nombre: "",
+      descripcion: "",
+    });
+
     // Cerrar el modal
+    onClose();
+  };
+
+  // Función para manejar el cierre del modal y limpiar el formulario
+  const handleClose = () => {
+    setFormData({
+      nombre: "",
+      descripcion: "",
+    });
     onClose();
   };
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose} // Cambiado a handleClose para limpiar al cerrar
       size="md"
       classNames={{
         body: "py-6",
@@ -108,7 +123,7 @@ export const CategoriaModal = ({
       }}
     >
       <ModalContent>
-        {(onClose) => (
+        {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <h3 className="text-xl font-semibold text-gray-900">
@@ -166,7 +181,11 @@ export const CategoriaModal = ({
             </ModalBody>
             <Divider />
             <ModalFooter>
-              <Button variant="flat" onPress={onClose} className="font-medium">
+              <Button
+                variant="flat"
+                onPress={handleClose}
+                className="font-medium"
+              >
                 Cancelar
               </Button>
               <Button

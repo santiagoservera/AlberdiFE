@@ -134,7 +134,9 @@ export default function SeccionCategorias() {
 
   // Funciones para modales de confirmación
   const openConfirmDeleteCategoria = (categoria, e) => {
-    e.stopPropagation();
+    if (e && typeof e.stopPropagation === "function") {
+      e.stopPropagation();
+    }
     setElementoEliminar(categoria);
     setTipoElementoEliminar("categoria");
     setIsConfirmModalOpen(true);

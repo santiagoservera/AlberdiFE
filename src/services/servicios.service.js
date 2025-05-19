@@ -1,4 +1,5 @@
 import api from "./api";
+import useAuthStore from "../store/useAuthStore";
 
 const serviciosService = {
   // Obtener todos los servicios
@@ -7,7 +8,6 @@ const serviciosService = {
       const response = await api.get("/servicios", { params });
       return response;
     } catch (error) {
-      console.error("Error al obtener servicios:", error);
       throw error;
     }
   },
@@ -22,7 +22,6 @@ const serviciosService = {
       const servicio = servicios.find((s) => s.id === id);
       return servicio || null;
     } catch (error) {
-      console.error(`Error al obtener servicio con ID ${id}:`, error);
       throw error;
     }
   },
@@ -43,7 +42,6 @@ const serviciosService = {
 
       return response.data;
     } catch (error) {
-      console.error("Error al crear servicio:", error.response?.data || error);
       throw error;
     }
   },
@@ -56,28 +54,24 @@ const serviciosService = {
         throw new Error("Los datos del servicio deben enviarse como FormData");
       }
 
-      // Para PUT con FormData, es posible que necesitemos añadir el método _method
-      if (!servicioData.has("_method")) {
-        servicioData.append("_method", "PUT");
+      // Obtener el token directamente del store de Zustand
+      const token = useAuthStore.getState().token;
+
+      // Verificar que tenemos un token
+      if (!token) {
+        throw new Error(
+          "No se encontró token de autenticación para actualizar el servicio"
+        );
       }
 
-      // Log para depuración
-      console.log("Datos enviados para actualizar servicio:");
-      for (const [key, value] of servicioData.entries()) {
-        if (key === "imagen") {
-          console.log(
-            `${key}: [Archivo binario]`,
-            value instanceof File ? `(${value.name})` : "No es un archivo"
-          );
-        } else {
-          console.log(`${key}: ${value}`);
-        }
-      }
+      // Añadir el método PATCH al FormData (no a la URL)
+      servicioData.append("_method", "PATCH");
 
-      // Algunos backends Laravel esperan POST con _method=PUT en lugar de PUT directo para FormData
+      // Realizar la solicitud como POST simple
       const response = await api.post(`/servicios/${id}`, servicioData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -89,10 +83,6 @@ const serviciosService = {
 
       return data;
     } catch (error) {
-      console.error(
-        `Error al actualizar servicio ${id}:`,
-        error.response?.data || error
-      );
       throw error;
     }
   },
@@ -103,7 +93,6 @@ const serviciosService = {
       const response = await api.delete(`/servicios/${id}`);
       return response.data;
     } catch (error) {
-      console.error(`Error al eliminar servicio con ID ${id}:`, error);
       throw error;
     }
   },

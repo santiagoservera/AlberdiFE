@@ -32,7 +32,7 @@ export const SubcategoriaModal = ({
     descripcion: false,
   });
 
-  // Cargar datos si estamos en modo editar
+  // Cargar datos si estamos en modo editar o limpiar si estamos en modo crear
   useEffect(() => {
     if (modo === "editar" && subcategoriaEditar) {
       setFormData({
@@ -47,7 +47,7 @@ export const SubcategoriaModal = ({
         descripcion: "",
       });
     }
-  }, [modo, subcategoriaEditar]);
+  }, [modo, subcategoriaEditar, isOpen]); // Añadido isOpen como dependencia para que se ejecute cuando el modal se abre
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,14 +93,29 @@ export const SubcategoriaModal = ({
     // Guardar la subcategoría
     onSave(subcategoriaData);
 
+    // Limpiar el formulario antes de cerrar
+    setFormData({
+      nombre: "",
+      descripcion: "",
+    });
+
     // Cerrar el modal
+    onClose();
+  };
+
+  // Función para manejar el cierre del modal y limpiar el formulario
+  const handleClose = () => {
+    setFormData({
+      nombre: "",
+      descripcion: "",
+    });
     onClose();
   };
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose} // Cambiado a handleClose para limpiar al cerrar
       size="md"
       classNames={{
         body: "py-6",
@@ -111,7 +126,7 @@ export const SubcategoriaModal = ({
       }}
     >
       <ModalContent>
-        {(onClose) => (
+        {() => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -178,7 +193,11 @@ export const SubcategoriaModal = ({
             </ModalBody>
             <Divider />
             <ModalFooter>
-              <Button variant="flat" onPress={onClose} className="font-medium">
+              <Button
+                variant="flat"
+                onPress={handleClose}
+                className="font-medium"
+              >
                 Cancelar
               </Button>
               <Button

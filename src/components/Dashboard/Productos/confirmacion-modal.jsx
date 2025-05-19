@@ -7,9 +7,7 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Divider,
 } from "@nextui-org/react";
-import { AlertTriangle } from "lucide-react";
 
 export const ConfirmacionModal = ({
   isOpen,
@@ -19,42 +17,26 @@ export const ConfirmacionModal = ({
   mensaje,
 }) => {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="sm"
-      classNames={{
-        backdrop: "bg-[#000000]/50 backdrop-blur-sm",
-        base: "bg-white rounded-lg shadow-lg",
-      }}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} size="sm">
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              <div className="flex items-center gap-2 text-danger">
-                <AlertTriangle size={20} className="text-danger" />
-                <h3 className="text-xl font-semibold text-danger">{titulo}</h3>
-              </div>
+              <h3 className="text-xl font-semibold text-gray-900">{titulo}</h3>
             </ModalHeader>
-            <Divider />
-            <ModalBody className="py-6">
-              <p className="text-gray-700">{mensaje}</p>
+            <ModalBody>
+              <p className="text-gray-600">{mensaje}</p>
             </ModalBody>
-            <Divider />
             <ModalFooter>
               <Button variant="flat" onPress={onClose} className="font-medium">
                 Cancelar
               </Button>
               <Button
                 color="danger"
-                onPress={() => {
-                  onConfirm();
-                  onClose();
-                }}
                 className="font-medium"
+                onPress={onConfirm}
               >
-                Eliminar
+                Confirmar
               </Button>
             </ModalFooter>
           </>
@@ -63,3 +45,5 @@ export const ConfirmacionModal = ({
     </Modal>
   );
 };
+
+export default ConfirmacionModal;

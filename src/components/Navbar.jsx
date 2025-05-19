@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -46,17 +48,21 @@ export const Navbar = () => {
     >
       <nav className="containerWidth flex h-full w-full gap-3 justify-between ">
         <div
-          className={`flex h-full py-[25px] gap-1 ${
-            isDashboard ? "bg-white rounded-full px-5 mt-2" : ""
+          className={`flex h-full py-[20px] gap-1 my-5 ${
+            location.pathname.includes("/Admin")
+              ? "bg-white rounded-full px-5 mt-2 "
+              : ""
           }`}
         >
           <Link to="/" className="flex items-center gap-2">
             <img
               src={logoAlberdi || "/placeholder.svg"}
-              // className="h-[60px] w-[62px]"
               className={
-                isDashboard ? "h-[50px] w-[52px]" : "h-[60px] w-[62px]"
+                location.pathname.includes("/Admin")
+                  ? "h-[50px] w-[52px]"
+                  : "h-[60px] w-[62px]"
               }
+              alt="Logo Alberdi"
             />
           </Link>
         </div>
@@ -114,11 +120,11 @@ export const Navbar = () => {
                     height="20"
                     viewBox="0 0 24 24"
                   >
-                    <g fill="none" stroke="#4F6B5F" stroke-width="1.5">
+                    <g fill="none" stroke="#4F6B5F" strokeWidth="1.5">
                       <circle cx="12" cy="9" r="3" />
                       <circle cx="12" cy="12" r="10" />
                       <path
-                        stroke-linecap="round"
+                        strokeLinecap="round"
                         d="M17.97 20c-.16-2.892-1.045-5-5.97-5s-5.81 2.108-5.97 5"
                       />
                     </g>

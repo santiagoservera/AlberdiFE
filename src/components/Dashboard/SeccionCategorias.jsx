@@ -1,21 +1,51 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import {
   Button,
-  Tooltip,
   Card,
   CardBody,
-  CardFooter,
   Divider,
-  Badge,
+  Spinner,
+  Input,
+  Chip,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
-import { categoriasIniciales } from "./Categorias/categoria-data";
 import { CategoriaModal } from "./Categorias/categoria-modal";
 import { SubcategoriaModal } from "./Categorias/subcategoria-modal";
 import { ConfirmacionModal } from "./Categorias/confirmacion-modal";
+import { useCategorias } from "../../hooks";
+import { useSubcategorias } from "../../hooks";
+import {
+  Search,
+  Plus,
+  MoreVertical,
+  Edit2,
+  Trash2,
+  ChevronDown,
+} from "lucide-react";
 
 export default function SeccionCategorias() {
-  // Estado para la lista de categorías
-  const [categorias, setCategorias] = useState(categoriasIniciales);
+  // Usar el hook de categorías para obtener los datos de la API
+  const {
+    categorias,
+    loading,
+    error,
+    fetchCategorias,
+    createCategoria,
+    updateCategoria,
+    deleteCategoria: eliminarCategoria,
+  } = useCategorias();
+
+  // Usar el hook de subcategorías
+  const {
+    createSubcategoria,
+    updateSubcategoria,
+    deleteSubcategoria: eliminarSubcategoria,
+  } = useSubcategorias();
 
   // Estados para modales de categoría
   const [isCategoriaModalOpen, setIsCategoriaModalOpen] = useState(false);
@@ -32,6 +62,39 @@ export default function SeccionCategorias() {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [elementoEliminar, setElementoEliminar] = useState(null);
   const [tipoElementoEliminar, setTipoElementoEliminar] = useState(""); // "categoria" o "subcategoria"
+
+  // Estado para búsqueda
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Estado para categorías expandidas
+  const [expandedCategories, setExpandedCategories] = useState({});
+
+  // Cargar categorías al montar el componente
+  useEffect(() => {
+    fetchCategorias();
+  }, [fetchCategorias]);
+
+  // Filtrar categorías según la búsqueda
+  const filteredCategorias = Array.isArray(categorias)
+    ? categorias.filter(
+        (categoria) =>
+          categoria?.nombre
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          false ||
+          categoria?.descripcion
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          false ||
+          (Array.isArray(categoria?.subcategorias) &&
+            categoria.subcategorias.some(
+              (sub) =>
+                sub?.nombre
+                  ?.toLowerCase()
+                  .includes(searchQuery.toLowerCase()) || false
+            ))
+      )
+    : [];
 
   // Funciones para modales de categoría
   const openCreateCategoriaModal = () => {
@@ -90,254 +153,345 @@ export default function SeccionCategorias() {
   };
 
   // Funciones CRUD para categorías
-  const saveCategoria = (categoriaData) => {
-    if (modalCategoriaMode === "crear") {
-      // Agregar nueva categoría
-      setCategorias([...categorias, categoriaData]);
-    } else {
-      // Actualizar categoría existente
-      setCategorias(
-        categorias.map((c) => (c.id === categoriaData.id ? categoriaData : c))
-      );
-    }
-  };
-
-  const deleteCategoria = () => {
-    if (elementoEliminar && tipoElementoEliminar === "categoria") {
-      setCategorias(categorias.filter((c) => c.id !== elementoEliminar.id));
+  const saveCategoria = async (categoriaData) => {
+    try {
+      if (modalCategoriaMode === "crear") {
+        // Crear nueva categoría usando el servicio API
+        await createCategoria(categoriaData);
+      } else {
+        // Actualizar categoría existente usando el servicio API
+        await updateCategoria(categoriaEditar.id, categoriaData);
+      }
+      // Recargar categorías después de crear/actualizar
+      fetchCategorias();
+      closeCategoriaModal();
+    } catch (error) {
+      console.error("Error al guardar categoría:", error);
+      // Aquí podrías mostrar un mensaje de error
     }
   };
 
   // Funciones CRUD para subcategorías
-  const saveSubcategoria = (subcategoriaData) => {
+  const saveSubcategoria = async (subcategoriaData) => {
     if (!categoriaPadreActual) return;
 
-    const nuevasCategorias = categorias.map((categoria) => {
-      if (categoria.id === categoriaPadreActual.id) {
-        if (modalSubcategoriaMode === "crear") {
-          // Agregar nueva subcategoría
-          return {
-            ...categoria,
-            subcategorias: [
-              ...(categoria.subcategorias || []),
-              subcategoriaData,
-            ],
-          };
-        } else {
-          // Actualizar subcategoría existente
-          return {
-            ...categoria,
-            subcategorias: categoria.subcategorias.map((sub) =>
-              sub.id === subcategoriaData.id ? subcategoriaData : sub
-            ),
-          };
-        }
+    try {
+      // Agregar el ID de la categoría padre a los datos de la subcategoría
+      const subcategoriaCompleta = {
+        ...subcategoriaData,
+        categoria_id: categoriaPadreActual.id,
+      };
+
+      if (modalSubcategoriaMode === "crear") {
+        // Crear nueva subcategoría
+        await createSubcategoria(subcategoriaCompleta);
+      } else {
+        // Actualizar subcategoría existente
+        await updateSubcategoria(subcategoriaEditar.id, subcategoriaCompleta);
       }
-      return categoria;
-    });
 
-    setCategorias(nuevasCategorias);
-  };
-
-  const deleteSubcategoria = () => {
-    if (elementoEliminar && tipoElementoEliminar === "subcategoria") {
-      const { categoriaPadre, subcategoria } = elementoEliminar;
-
-      const nuevasCategorias = categorias.map((categoria) => {
-        if (categoria.id === categoriaPadre.id) {
-          return {
-            ...categoria,
-            subcategorias: categoria.subcategorias.filter(
-              (sub) => sub.id !== subcategoria.id
-            ),
-          };
-        }
-        return categoria;
-      });
-
-      setCategorias(nuevasCategorias);
+      // Recargar categorías después de crear/actualizar subcategoría
+      fetchCategorias();
+      closeSubcategoriaModal();
+    } catch (error) {
+      console.error("Error al guardar subcategoría:", error);
+      // Aquí podrías mostrar un mensaje de error
     }
   };
 
   // Función para manejar la eliminación según el tipo
-  const handleConfirmDelete = () => {
-    if (tipoElementoEliminar === "categoria") {
-      deleteCategoria();
-    } else if (tipoElementoEliminar === "subcategoria") {
-      deleteSubcategoria();
+  const handleConfirmDelete = async () => {
+    try {
+      if (tipoElementoEliminar === "categoria") {
+        await eliminarCategoria(elementoEliminar.id);
+      } else if (tipoElementoEliminar === "subcategoria") {
+        const { subcategoria } = elementoEliminar;
+        await eliminarSubcategoria(subcategoria.id);
+      }
+      // Recargar categorías después de eliminar
+      fetchCategorias();
+      closeConfirmModal();
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      // Aquí podrías mostrar un mensaje de error
     }
   };
 
+  // Función para alternar la expansión de una categoría
+  const toggleCategoryExpansion = (categoriaId) => {
+    setExpandedCategories((prev) => ({
+      ...prev,
+      [categoriaId]: !prev[categoriaId],
+    }));
+  };
+
   return (
-    <section className="p-6">
-      <div className="flex md:flex-row flex-col justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold font-firelli text-textoVerde">
-          Categorías
-        </h2>
-        <Button
-          className="bg-[#4F6B5F] text-white font-firelli"
-          onClick={openCreateCategoriaModal}
-        >
-          Agregar nueva categoría
-        </Button>
-      </div>
+    <section className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        {/* Encabezado con búsqueda y botón de agregar */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-semibold text-[#4F6B5F] mb-1">
+              Categorías
+            </h1>
+            <p className="text-gray-500 text-sm">
+              Gestiona las categorías y subcategorías de productos
+            </p>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categorias.map((categoria) => (
-          <Card key={categoria.id} className="max-w-full">
-            <CardBody className="relative group">
-              <div
-                className="cursor-pointer"
-                onClick={() => openEditCategoriaModal(categoria)}
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <div className="relative w-full sm:w-64">
+              <Input
+                placeholder="Buscar categorías..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                startContent={<Search size={18} className="text-gray-400" />}
+                classNames={{
+                  input: "pl-8",
+                }}
+                className="w-full"
+                size="sm"
+              />
+            </div>
+            <Button
+              color="primary"
+              className="bg-[#4F6B5F] text-white font-firelli"
+              startContent={<Plus size={18} />}
+              onClick={openCreateCategoriaModal}
+            >
+              Nueva categoría
+            </Button>
+          </div>
+        </div>
+
+        {/* Contenido principal */}
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Spinner size="lg" color="#4F6B5F" />
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 text-red-600 p-4 rounded-lg text-center">
+            Error al cargar categorías: {error}
+          </div>
+        ) : filteredCategorias.length === 0 ? (
+          <div className="bg-white rounded-xl p-12 text-center shadow-sm">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#4F6B5F"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <div className="relative h-40 mb-4">
-                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
-                    <h3 className="text-xl font-bold text-white">
-                      {categoria.nombre}
-                    </h3>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-2">
-                  {categoria.descripcion}
-                </p>
-              </div>
-
-              {/* Botones de acción para categoría */}
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
-                <Tooltip content="Editar categoría">
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    color="primary"
-                    variant="flat"
-                    className="bg-white/80 backdrop-blur-md"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openEditCategoriaModal(categoria);
-                    }}
+                <path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path>
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No hay categorías
+            </h3>
+            <p className="text-gray-500 mb-6">
+              {searchQuery
+                ? "No se encontraron categorías que coincidan con tu búsqueda."
+                : "Comienza agregando una nueva categoría para organizar tus productos."}
+            </p>
+            <Button
+              color="primary"
+              className="bg-[#4F6B5F] text-white font-firelli"
+              startContent={<Plus size={18} />}
+              onClick={openCreateCategoriaModal}
+            >
+              Agregar primera categoría
+            </Button>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {filteredCategorias.map((categoria) => (
+              <Card
+                key={categoria.id}
+                className="shadow-sm hover:shadow-md transition-shadow duration-200"
+              >
+                <CardBody className="p-0">
+                  {/* Cabecera de la categoría */}
+                  <div
+                    className="flex items-center justify-between p-4 cursor-pointer"
+                    onClick={() => toggleCategoryExpansion(categoria.id)}
                   >
-                    <EditIcon />
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Eliminar categoría" color="danger">
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    color="danger"
-                    variant="flat"
-                    className="bg-white/80 backdrop-blur-md"
-                    onClick={(e) => openConfirmDeleteCategoria(categoria, e)}
-                  >
-                    <DeleteIcon />
-                  </Button>
-                </Tooltip>
-                <Tooltip content="Agregar subcategoría" color="success">
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    color="success"
-                    variant="flat"
-                    className="bg-white/80 backdrop-blur-md"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openCreateSubcategoriaModal(categoria);
-                    }}
-                  >
-                    <AddIcon />
-                  </Button>
-                </Tooltip>
-              </div>
-
-              {/* Badge con contador de subcategorías */}
-              {categoria.subcategorias &&
-                categoria.subcategorias.length > 0 && (
-                  <Badge
-                    content={categoria.subcategorias.length}
-                    color="primary"
-                    shape="circle"
-                    placement="top-right"
-                    className="absolute top-2 left-2"
-                  >
-                    <div className="w-4 h-4"></div>
-                  </Badge>
-                )}
-            </CardBody>
-
-            {/* Subcategorías */}
-            {categoria.subcategorias && categoria.subcategorias.length > 0 && (
-              <>
-                <Divider />
-                <CardFooter className="flex flex-col items-start p-4">
-                  <p className="text-sm font-semibold mb-2">Subcategorías:</p>
-                  <div className="w-full space-y-2">
-                    {categoria.subcategorias.map((subcategoria) => (
-                      <div
-                        key={subcategoria.id}
-                        className="flex items-center justify-between p-2 bg-gray-50 rounded-lg hover:bg-gray-100 relative group/sub"
-                      >
-                        <div
-                          className="flex items-center gap-3 cursor-pointer flex-1"
-                          onClick={() =>
-                            openEditSubcategoriaModal(categoria, subcategoria)
-                          }
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-md bg-[#4F6B5F]/10 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#4F6B5F"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         >
-                          <div>
-                            <p className="text-sm font-medium">
-                              {subcategoria.nombre}
-                            </p>
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-medium text-gray-900">
+                          {categoria.nombre}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {categoria.descripcion}
+                        </p>
+                      </div>
+                      {categoria.subcategorias &&
+                        categoria.subcategorias.length > 0 && (
+                          <Chip
+                            color="primary"
+                            variant="flat"
+                            size="sm"
+                            className="ml-2"
+                          >
+                            {categoria.subcategorias.length} subcategorías
+                          </Chip>
+                        )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ChevronDown
+                        size={20}
+                        className={`text-gray-400 transition-transform ${
+                          expandedCategories[categoria.id] ? "rotate-180" : ""
+                        }`}
+                      />
+                      <Dropdown>
+                        <DropdownTrigger>
+                          <Button
+                            isIconOnly
+                            variant="light"
+                            size="sm"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <MoreVertical size={18} className="text-gray-500" />
+                          </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Acciones de categoría">
+                          <DropdownItem
+                            key="edit"
+                            startContent={<Edit2 size={16} />}
+                            onClick={() => {
+                              openEditCategoriaModal(categoria);
+                            }}
+                          >
+                            Editar categoría
+                          </DropdownItem>
+                          <DropdownItem
+                            key="add"
+                            startContent={<Plus size={16} />}
+                            onClick={() => {
+                              openCreateSubcategoriaModal(categoria);
+                            }}
+                          >
+                            Agregar subcategoría
+                          </DropdownItem>
+                          <DropdownItem
+                            key="delete"
+                            className="text-danger"
+                            color="danger"
+                            startContent={<Trash2 size={16} />}
+                            onClick={(e) => {
+                              openConfirmDeleteCategoria(categoria, e);
+                            }}
+                          >
+                            Eliminar categoría
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    </div>
+                  </div>
+
+                  {/* Subcategorías (expandibles) */}
+                  {expandedCategories[categoria.id] &&
+                    categoria.subcategorias &&
+                    categoria.subcategorias.length > 0 && (
+                      <>
+                        <Divider />
+                        <div className="p-4 bg-gray-50">
+                          <div className="flex justify-between items-center mb-3">
+                            <h4 className="text-sm font-medium text-gray-700">
+                              Subcategorías
+                            </h4>
+                            <Button
+                              size="sm"
+                              variant="flat"
+                              color="primary"
+                              startContent={<Plus size={14} />}
+                              onClick={() =>
+                                openCreateSubcategoriaModal(categoria)
+                              }
+                              className="h-8"
+                            >
+                              Agregar
+                            </Button>
+                          </div>
+                          <div className="space-y-2">
+                            {categoria.subcategorias.map((subcategoria) => (
+                              <div
+                                key={subcategoria.id}
+                                className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-colors"
+                              >
+                                <div className="flex items-center gap-2">
+                                  <div className="w-2 h-2 rounded-full bg-[#4F6B5F]"></div>
+                                  <span className="text-sm">
+                                    {subcategoria.nombre}
+                                  </span>
+                                </div>
+                                <div className="flex gap-1">
+                                  <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    onClick={() =>
+                                      openEditSubcategoriaModal(
+                                        categoria,
+                                        subcategoria
+                                      )
+                                    }
+                                  >
+                                    <Edit2
+                                      size={14}
+                                      className="text-gray-500"
+                                    />
+                                  </Button>
+                                  <Button
+                                    isIconOnly
+                                    size="sm"
+                                    variant="light"
+                                    className="text-danger"
+                                    onClick={(e) =>
+                                      openConfirmDeleteSubcategoria(
+                                        categoria,
+                                        subcategoria,
+                                        e
+                                      )
+                                    }
+                                  >
+                                    <Trash2
+                                      size={14}
+                                      className="text-red-500"
+                                    />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
-
-                        {/* Botones de acción para subcategoría */}
-                        <div className=" flex gap-1">
-                          <Tooltip content="Editar subcategoría">
-                            <Button
-                              isIconOnly
-                              size="sm"
-                              color="primary"
-                              variant="flat"
-                              className="bg-white/80 backdrop-blur-md"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openEditSubcategoriaModal(
-                                  categoria,
-                                  subcategoria
-                                );
-                              }}
-                            >
-                              <EditIcon size={14} />
-                            </Button>
-                          </Tooltip>
-                          <Tooltip
-                            content="Eliminar subcategoría"
-                            color="danger"
-                          >
-                            <Button
-                              isIconOnly
-                              size="sm"
-                              color="danger"
-                              variant="flat"
-                              className="bg-white/80 backdrop-blur-md"
-                              onClick={(e) =>
-                                openConfirmDeleteSubcategoria(
-                                  categoria,
-                                  subcategoria,
-                                  e
-                                )
-                              }
-                            >
-                              <DeleteIcon size={14} />
-                            </Button>
-                          </Tooltip>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardFooter>
-              </>
-            )}
-          </Card>
-        ))}
+                      </>
+                    )}
+                </CardBody>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Modales */}
@@ -367,97 +521,14 @@ export default function SeccionCategorias() {
         }`}
         mensaje={
           tipoElementoEliminar === "categoria"
-            ? `¿Está seguro que desea eliminar la categoría "${elementoEliminar?.nombre}"? Esta acción eliminará también todas sus subcategorías.`
-            : `¿Está seguro que desea eliminar la subcategoría "${elementoEliminar?.subcategoria?.nombre}"?`
+            ? `¿Está seguro que desea eliminar la categoría "${
+                elementoEliminar?.nombre || ""
+              }"? Esta acción eliminará también todas sus subcategorías.`
+            : `¿Está seguro que desea eliminar la subcategoría "${
+                elementoEliminar?.subcategoria?.nombre || ""
+              }"?`
         }
       />
     </section>
   );
 }
-
-// Iconos para los botones
-const EditIcon = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M11.05 3.00002L4.20835 10.2417C3.95002 10.5167 3.70002 11.0584 3.65002 11.4334L3.34169 14.1334C3.23335 15.1084 3.93335 15.775 4.90002 15.6084L7.58335 15.15C7.95835 15.0834 8.48335 14.8084 8.74168 14.525L15.5834 7.28335C16.7667 6.03335 17.3 4.60835 15.4583 2.86668C13.625 1.14168 12.2334 1.75002 11.05 3.00002Z"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9.90833 4.20831C10.2667 6.50831 12.1333 8.26665 14.45 8.49998"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const DeleteIcon = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M21 5.97998C17.67 5.64998 14.32 5.47998 10.98 5.47998C9 5.47998 7.02 5.57998 5.04 5.77998L3 5.97998"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8.5 4.97L8.72 3.66C8.88 2.71 9 2 10.69 2H13.31C15 2 15.13 2.75 15.28 3.67L15.5 4.97"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M18.85 9.14001L18.2 19.21C18.09 20.78 18 22 15.21 22H8.79002C6.00002 22 5.91002 20.78 5.80002 19.21L5.15002 9.14001"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M10.33 16.5H13.66"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M9.5 12.5H14.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const AddIcon = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM16 12.75H12.75V16C12.75 16.41 12.41 16.75 12 16.75C11.59 16.75 11.25 16.41 11.25 16V12.75H8C7.59 12.75 7.25 12.41 7.25 12C7.25 11.59 7.59 11.25 8 11.25H11.25V8C11.25 7.59 11.59 7.25 12 7.25C12.41 7.25 12.75 7.59 12.75 8V11.25H16C16.41 11.25 16.75 11.59 16.75 12C16.75 12.41 16.41 12.75 16 12.75Z"
-      fill="currentColor"
-    />
-  </svg>
-);

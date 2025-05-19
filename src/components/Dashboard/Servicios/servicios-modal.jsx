@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
   Modal,
@@ -8,7 +10,9 @@ import {
   Button,
   Input,
   Textarea,
+  Divider,
 } from "@nextui-org/react";
+import { X, ImageIcon } from "lucide-react";
 
 export const CreateServicioModal = ({
   isOpen,
@@ -28,14 +32,37 @@ export const CreateServicioModal = ({
     descripcion: false,
   });
 
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [mantenerImagen, setMantenerImagen] = useState(true);
+
   // Cargar datos si estamos en modo editar
   useEffect(() => {
     if (modo === "editar" && servicioEditar) {
       setFormData({
+        id: servicioEditar.id,
         nombre: servicioEditar.nombre || "",
         descripcion: servicioEditar.descripcion || "",
         imagen: null, // No podemos cargar la imagen existente como File
       });
+
+      // Si hay una imagen existente, mostrarla en la vista previa
+      if (servicioEditar.imagenUrl || servicioEditar.imagen) {
+        // Usar directamente la URL proporcionada por la API
+        let imagenUrl = servicioEditar.imagenUrl || "";
+
+        // Corregir solo si hay doble barra
+        if (imagenUrl.includes("/storage//")) {
+          imagenUrl = imagenUrl.replace("/storage//", "/storage/");
+        }
+
+        // Añadir un timestamp para evitar problemas de caché
+        const timestamp = new Date().getTime();
+        setPreviewUrl(`${imagenUrl}?t=${timestamp}`);
+        setMantenerImagen(true);
+      } else {
+        setPreviewUrl(null);
+        setMantenerImagen(false);
+      }
     } else {
       // Resetear el formulario en modo crear
       setFormData({
@@ -43,6 +70,8 @@ export const CreateServicioModal = ({
         descripcion: "",
         imagen: null,
       });
+      setPreviewUrl(null);
+      setMantenerImagen(false);
     }
   }, [modo, servicioEditar]);
 
@@ -64,15 +93,31 @@ export const CreateServicioModal = ({
 
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
+      const file = e.target.files[0];
       setFormData((prev) => ({
         ...prev,
-        imagen: e.target.files[0],
+        imagen: file,
       }));
+
+      // Crear URL para vista previa
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+      setMantenerImagen(false); // Ya no mantener la imagen anterior
     }
   };
 
   const handleAddImageClick = () => {
     document.getElementById("servicioPictureInput")?.click();
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({
+      ...prev,
+      imagen: null,
+    }));
+
+    setPreviewUrl(null);
+    setMantenerImagen(false); // No mantener la imagen anterior
   };
 
   const handleSubmit = () => {
@@ -89,136 +134,171 @@ export const CreateServicioModal = ({
       return;
     }
 
-    // Preparar el objeto a guardar
-    const servicioData = {
-      ...formData,
-    };
+    // Siempre crear un FormData para enviar
+    const formDataToSend = new FormData();
 
-    // Si estamos en modo editar, mantener el ID existente
+    // Agregar los campos de texto
+    formDataToSend.append("nombre", formData.nombre.trim());
+    formDataToSend.append("descripcion", formData.descripcion.trim());
+
+    // Si estamos en modo editar, incluir el ID
     if (modo === "editar" && servicioEditar) {
-      servicioData.id = servicioEditar.id;
-    } else {
-      // Generar ID único para nuevo servicio
-      servicioData.id = Date.now();
+      formDataToSend.append("id", servicioEditar.id);
+
+      // Indicar si debemos mantener la imagen existente o eliminarla
+      formDataToSend.append("mantener_imagen", mantenerImagen ? "1" : "0");
     }
 
-    // Si hay una imagen, crear una URL para ella
-    if (formData.imagen) {
-      // En un entorno real, aquí subirías la imagen a un servidor
-      // y obtendrías una URL permanente. Para este ejemplo, usamos URL.createObjectURL
-      servicioData.imagenURL = URL.createObjectURL(formData.imagen);
-    } else if (modo === "editar" && servicioEditar.imagen) {
-      // Mantener la imagen existente si no se seleccionó una nueva
-      servicioData.imagenURL = servicioEditar.imagen;
-    } else {
-      // Usar imagen por defecto
-      servicioData.imagenURL = "/servicio-default.jpg";
+    // Agregar la imagen solo si existe una nueva
+    if (formData.imagen instanceof File) {
+      formDataToSend.append("imagen", formData.imagen);
     }
 
     // Guardar el servicio
-    onSave(servicioData);
+    onSave(formDataToSend);
 
     // Cerrar el modal
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="md"
+      classNames={{
+        body: "py-6",
+        backdrop: "bg-[#000000]/50 backdrop-blur-sm",
+        base: "bg-white rounded-lg shadow-lg",
+        header: "border-b border-gray-200",
+        footer: "border-t border-gray-200",
+      }}
+    >
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {modo === "crear" ? "Nuevo Servicio" : "Editar Servicio"}
+              <h3 className="text-xl font-semibold text-gray-900">
+                {modo === "crear" ? "Nuevo Servicio" : "Editar Servicio"}
+              </h3>
+              <p className="text-sm text-gray-500">
+                {modo === "crear"
+                  ? "Crea un nuevo servicio para mostrar a tus clientes"
+                  : "Modifica los detalles de este servicio"}
+              </p>
             </ModalHeader>
+            <Divider />
             <ModalBody>
-              <div className="space-y-4">
-                <Input
-                  label="Nombre del servicio"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  isRequired
-                  isInvalid={errors.nombre}
-                  errorMessage={errors.nombre ? "El nombre es obligatorio" : ""}
-                  placeholder="Ej: Limpieza de oficinas"
-                />
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <Input
+                    label="Nombre del servicio"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    isRequired
+                    isInvalid={errors.nombre}
+                    errorMessage={
+                      errors.nombre ? "El nombre es obligatorio" : ""
+                    }
+                    placeholder="Ej: Limpieza de oficinas"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "text-sm font-medium text-gray-700",
+                    }}
+                  />
 
-                <Textarea
-                  label="Descripción"
-                  name="descripcion"
-                  value={formData.descripcion}
-                  onChange={handleChange}
-                  isRequired
-                  isInvalid={errors.descripcion}
-                  errorMessage={
-                    errors.descripcion ? "La descripción es obligatoria" : ""
-                  }
-                  placeholder="Describe el servicio en detalle..."
-                  minRows={3}
-                  maxRows={5}
-                />
+                  <Textarea
+                    label="Descripción"
+                    name="descripcion"
+                    value={formData.descripcion}
+                    onChange={handleChange}
+                    isRequired
+                    isInvalid={errors.descripcion}
+                    errorMessage={
+                      errors.descripcion ? "La descripción es obligatoria" : ""
+                    }
+                    placeholder="Describe el servicio en detalle..."
+                    minRows={3}
+                    maxRows={5}
+                    variant="bordered"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "text-sm font-medium text-gray-700",
+                    }}
+                  />
+                </div>
 
-                <div className="bg-white text-black w-full rounded-lg shadow mb-5">
-                  <div className="w-[95%] mx-auto py-3">
-                    <p className="text-lg font-bold">Imagen del servicio</p>
-                    <div className="py-5 flex justify-center">
-                      {formData.imagen ? (
-                        <div className="relative">
-                          <img
-                            src={
-                              URL.createObjectURL(formData.imagen) ||
-                              "/placeholder.svg"
-                            }
-                            alt="Vista previa"
-                            className="w-[200px] h-[150px] object-cover rounded-lg shadow"
-                          />
-                          <Button
-                            isIconOnly
-                            size="sm"
-                            color="danger"
-                            className="absolute top-2 right-2"
-                            onClick={() =>
-                              setFormData({ ...formData, imagen: null })
-                            }
-                          >
-                            ✕
-                          </Button>
-                        </div>
-                      ) : (
-                        <div
-                          className="flex flex-col border border-dashed border-gray-400 w-[200px] h-[150px] 
-                          justify-center items-center gap-3 rounded-lg shadow cursor-pointer hover:border-gray-600"
-                          onClick={handleAddImageClick}
+                <div>
+                  <p className="text-sm font-medium text-gray-700 mb-2">
+                    Imagen del servicio
+                  </p>
+                  <div className="bg-gray-50 border border-dashed border-gray-300 rounded-lg p-4 flex flex-col items-center justify-center">
+                    {previewUrl ? (
+                      <div className="relative w-full">
+                        <img
+                          src={previewUrl || "/placeholder.svg"}
+                          alt="Vista previa"
+                          className="w-full h-48 object-cover rounded-lg"
+                          onError={(e) => {
+                            console.error(
+                              "Error al cargar la imagen:",
+                              previewUrl
+                            );
+                            e.target.onerror = null;
+                            e.target.src = "/customer-service-interaction.png";
+                          }}
+                        />
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          color="danger"
+                          variant="solid"
+                          className="absolute -top-2 -right-2"
+                          onClick={handleRemoveImage}
                         >
-                          <div className="border border-gray-400 rounded-full text-3xl px-2 py-0 leading-none">
-                            +
-                          </div>
-                          <p className="text-sm text-gray-500">
-                            Haga clic para agregar imagen
-                          </p>
-                          <input
-                            id="servicioPictureInput"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            style={{ display: "none" }}
-                          />
+                          <X size={14} />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div
+                        className="w-full flex flex-col items-center justify-center py-8 cursor-pointer hover:bg-gray-100 transition-colors rounded-lg"
+                        onClick={handleAddImageClick}
+                      >
+                        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mb-3">
+                          <ImageIcon size={20} className="text-gray-500" />
                         </div>
-                      )}
-                    </div>
+                        <p className="text-sm font-medium text-gray-700">
+                          Haz clic para subir una imagen
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          PNG, JPG o WEBP (máx. 2MB)
+                        </p>
+                      </div>
+                    )}
+                    <input
+                      id="servicioPictureInput"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: "none" }}
+                    />
                   </div>
                 </div>
               </div>
             </ModalBody>
+            <Divider />
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button variant="flat" onPress={onClose} className="font-medium">
                 Cancelar
               </Button>
               <Button
-                className="bg-[#4F6B5F] text-white"
+                color="primary"
+                className="bg-[#4F6B5F] text-white font-medium"
                 onPress={handleSubmit}
               >
-                {modo === "crear" ? "Guardar Servicio" : "Actualizar Servicio"}
+                {modo === "crear" ? "Crear servicio" : "Guardar cambios"}
               </Button>
             </ModalFooter>
           </>
@@ -227,3 +307,6 @@ export const CreateServicioModal = ({
     </Modal>
   );
 };
+
+// También exportamos como ServicioModal para mantener consistencia con el resto del código
+export const ServicioModal = CreateServicioModal;

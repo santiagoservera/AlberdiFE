@@ -12,6 +12,7 @@ import Carrito from "./components/Carrito";
 import FormularioProductosPage from "./pages/FormularioProductosPage";
 import AdminLogin from "./pages/AdminLogin";
 import DashboardAdmin from "./pages/DashboardAdmin";
+import ProtectedRoute from "./components/protected-route";
 
 function App() {
   return (
@@ -32,7 +33,14 @@ function App() {
           element={<FormularioProductosPage />}
         />
         <Route path="/Admin" element={<AdminLogin />} />
-        <Route path="/Admin/dashboard" element={<DashboardAdmin />} />
+        <Route
+          path="/Admin/Dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardAdmin />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

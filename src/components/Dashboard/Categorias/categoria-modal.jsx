@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import {
   Modal,
@@ -8,8 +10,8 @@ import {
   Button,
   Input,
   Textarea,
+  Divider,
 } from "@nextui-org/react";
-import { generarId } from "./categoria-data";
 
 export const CategoriaModal = ({
   isOpen,
@@ -21,8 +23,6 @@ export const CategoriaModal = ({
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
-    imagen: null,
-    subcategorias: [],
   });
 
   const [errors, setErrors] = useState({
@@ -37,16 +37,12 @@ export const CategoriaModal = ({
         id: categoriaEditar.id,
         nombre: categoriaEditar.nombre || "",
         descripcion: categoriaEditar.descripcion || "",
-        imagen: null, // No podemos cargar la imagen existente como File
-        subcategorias: categoriaEditar.subcategorias || [],
       });
     } else {
       // Resetear el formulario en modo crear
       setFormData({
         nombre: "",
         descripcion: "",
-        imagen: null,
-        subcategorias: [],
       });
     }
   }, [modo, categoriaEditar]);
@@ -65,19 +61,6 @@ export const CategoriaModal = ({
         [name]: false,
       });
     }
-  };
-
-  const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        imagen: e.target.files[0],
-      }));
-    }
-  };
-
-  const handleAddImageClick = () => {
-    document.getElementById("categoriaPictureInput")?.click();
   };
 
   const handleSubmit = () => {
@@ -102,25 +85,6 @@ export const CategoriaModal = ({
     // Si estamos en modo editar, mantener el ID existente
     if (modo === "editar" && categoriaEditar) {
       categoriaData.id = categoriaEditar.id;
-      // Mantener las subcategorías existentes
-      categoriaData.subcategorias = categoriaEditar.subcategorias || [];
-    } else {
-      // Generar ID único para nueva categoría
-      categoriaData.id = generarId();
-      categoriaData.subcategorias = [];
-    }
-
-    // Si hay una imagen, crear una URL para ella
-    if (formData.imagen) {
-      // En un entorno real, aquí subirías la imagen a un servidor
-      // y obtendrías una URL permanente. Para este ejemplo, usamos URL.createObjectURL
-      categoriaData.imagenURL = URL.createObjectURL(formData.imagen);
-    } else if (modo === "editar" && categoriaEditar.imagen) {
-      // Mantener la imagen existente si no se seleccionó una nueva
-      categoriaData.imagen = categoriaEditar.imagen;
-    } else {
-      // Usar imagen por defecto
-      categoriaData.imagenURL = "/categoria-default.jpg";
     }
 
     // Guardar la categoría
@@ -131,55 +95,86 @@ export const CategoriaModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="md"
+      classNames={{
+        body: "py-6",
+        backdrop: "bg-[#000000]/50 backdrop-blur-sm",
+        base: "bg-white rounded-lg shadow-lg",
+        header: "border-b border-gray-200",
+        footer: "border-t border-gray-200",
+      }}
+    >
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              {modo === "crear" ? "Nueva Categoría" : "Editar Categoría"}
+              <h3 className="text-xl font-semibold text-gray-900">
+                {modo === "crear" ? "Nueva Categoría" : "Editar Categoría"}
+              </h3>
+              <p className="text-sm text-gray-500">
+                {modo === "crear"
+                  ? "Crea una nueva categoría para organizar tus productos"
+                  : "Modifica los detalles de esta categoría"}
+              </p>
             </ModalHeader>
+            <Divider />
             <ModalBody>
-              <div className="space-y-4">
-                <Input
-                  label="Nombre de la categoría"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  isRequired
-                  isInvalid={errors.nombre}
-                  errorMessage={errors.nombre ? "El nombre es obligatorio" : ""}
-                  placeholder="Ej: Limpieza"
-                />
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <Input
+                    label="Nombre de la categoría"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleChange}
+                    isRequired
+                    isInvalid={errors.nombre}
+                    errorMessage={
+                      errors.nombre ? "El nombre es obligatorio" : ""
+                    }
+                    placeholder="Ej: Limpieza"
+                    variant="bordered"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "text-sm font-medium text-gray-700",
+                    }}
+                  />
 
-                <Textarea
-                  label="Descripción"
-                  name="descripcion"
-                  value={formData.descripcion}
-                  onChange={handleChange}
-                  isRequired
-                  isInvalid={errors.descripcion}
-                  errorMessage={
-                    errors.descripcion ? "La descripción es obligatoria" : ""
-                  }
-                  placeholder="Describe la categoría en detalle..."
-                  minRows={3}
-                  maxRows={5}
-                />
-
-                <div className="bg-white text-black w-full rounded-lg shadow mb-5"></div>
+                  <Textarea
+                    label="Descripción"
+                    name="descripcion"
+                    value={formData.descripcion}
+                    onChange={handleChange}
+                    isRequired
+                    isInvalid={errors.descripcion}
+                    errorMessage={
+                      errors.descripcion ? "La descripción es obligatoria" : ""
+                    }
+                    placeholder="Describe la categoría en detalle..."
+                    minRows={3}
+                    maxRows={5}
+                    variant="bordered"
+                    labelPlacement="outside"
+                    classNames={{
+                      label: "text-sm font-medium text-gray-700",
+                    }}
+                  />
+                </div>
               </div>
             </ModalBody>
+            <Divider />
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              <Button variant="flat" onPress={onClose} className="font-medium">
                 Cancelar
               </Button>
               <Button
-                className="bg-[#4F6B5F] text-white font-firelli"
+                color="primary"
+                className="bg-[#4F6B5F] text-white font-medium"
                 onPress={handleSubmit}
               >
-                {modo === "crear"
-                  ? "Guardar Categoría"
-                  : "Actualizar Categoría"}
+                {modo === "crear" ? "Crear categoría" : "Guardar cambios"}
               </Button>
             </ModalFooter>
           </>

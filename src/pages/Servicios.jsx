@@ -6,7 +6,7 @@ import SeleccionServicio from "../components/Servicios/SeleccionServicio";
 const Servicios = () => {
   return (
     <>
-      <div className="bg-home lg:absolute">
+      <div className="bg-home absolute w-full">
         <Navbar />
         <SeleccionServicio />
         <Footer />

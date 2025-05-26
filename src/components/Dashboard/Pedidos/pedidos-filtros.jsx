@@ -1,8 +1,22 @@
 "use client";
-
-import React from "react";
 import { Input, Select, SelectItem } from "@nextui-org/react";
-import { estadosPedidoFiltro, tiposPedidoFiltro } from "./pedidos-data";
+
+// Estados de pedido actualizados para la API real
+export const estadosPedidoFiltro = [
+  { key: "", value: "Todos los estados" },
+  { key: "pendiente", value: "Pendiente" },
+  { key: "confirmado", value: "Confirmado" },
+  { key: "enviado", value: "Enviado" },
+  { key: "entregado", value: "Entregado" },
+  { key: "cancelado", value: "Cancelado" },
+];
+
+// Tipos de pedido basados en service_id
+export const tiposPedidoFiltro = [
+  { key: "", value: "Todos los tipos" },
+  { key: "Producto", value: "Productos" },
+  { key: "Servicio", value: "Servicios" },
+];
 
 export const PedidosFiltros = ({
   filtros,
@@ -25,10 +39,11 @@ export const PedidosFiltros = ({
         name="estado"
         label="Estado"
         placeholder="Todos los estados"
-        value={filtros.estado}
-        onChange={(e) =>
-          handleChange({ target: { name: "estado", value: e.target.value } })
-        }
+        selectedKeys={filtros.estado ? [filtros.estado] : []}
+        onSelectionChange={(keys) => {
+          const value = Array.from(keys)[0] || "";
+          handleChange({ target: { name: "estado", value } });
+        }}
         className="w-full"
       >
         {estadosPedidoFiltro.map((estado) => (
@@ -41,10 +56,11 @@ export const PedidosFiltros = ({
         name="tipo"
         label="Tipo"
         placeholder="Todos los tipos"
-        value={filtros.tipo}
-        onChange={(e) =>
-          handleChange({ target: { name: "tipo", value: e.target.value } })
-        }
+        selectedKeys={filtros.tipo ? [filtros.tipo] : []}
+        onSelectionChange={(keys) => {
+          const value = Array.from(keys)[0] || "";
+          handleChange({ target: { name: "tipo", value } });
+        }}
         className="w-full"
       >
         {tiposPedidoFiltro.map((tipo) => (

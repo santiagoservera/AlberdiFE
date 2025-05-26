@@ -14,8 +14,36 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { columns, rowsPerPageOptions, statusColorMap } from "./pedidos-data";
 import { DeleteIcon, EditIcon, EyeIcon } from "./pedidos-icons";
+
+// Configuración de columnas
+export const columns = [
+  { name: "CLIENTE", uid: "cliente" },
+  { name: "PEDIDO", uid: "pedido" },
+  { name: "TIPO", uid: "tipo" },
+  { name: "ESTADO", uid: "estado" },
+  { name: "FECHA", uid: "fecha" },
+  { name: "DIRECCIÓN", uid: "direccion" },
+  { name: "TELÉFONO", uid: "telefono" },
+  { name: "ACCIONES", uid: "acciones" },
+];
+
+// Mapeo de colores para estados
+export const statusColorMap = {
+  pendiente: "warning",
+  confirmado: "primary",
+  enviado: "secondary",
+  entregado: "success",
+  cancelado: "danger",
+};
+
+// Opciones de filas por página
+export const rowsPerPageOptions = [
+  { key: "5", value: "5" },
+  { key: "10", value: "10" },
+  { key: "15", value: "15" },
+  { key: "20", value: "20" },
+];
 
 export const PedidosTable = ({
   items,
@@ -26,6 +54,7 @@ export const PedidosTable = ({
   setRowsPerPage,
   openViewModal,
   openEditModal,
+  handleDeleteOrden,
 }) => {
   const pages = Math.ceil(pedidosFiltrados.length / rowsPerPage);
 
@@ -40,6 +69,9 @@ export const PedidosTable = ({
             <div className="flex flex-col">
               <p className="text-bold text-sm">{`${pedido.nombre} ${pedido.apellido}`}</p>
               <p className="text-sm text-default-400">{pedido.telefono}</p>
+              {pedido.email && (
+                <p className="text-xs text-default-300">{pedido.email}</p>
+              )}
             </div>
           );
         case "pedido":
@@ -52,12 +84,21 @@ export const PedidosTable = ({
             </div>
           );
         case "tipo":
-          return <div className="capitalize">{pedido.tipo}</div>;
+          return (
+            <Chip
+              className="capitalize"
+              color={pedido.tipo === "Servicio" ? "secondary" : "primary"}
+              size="sm"
+              variant="flat"
+            >
+              {pedido.tipo}
+            </Chip>
+          );
         case "estado":
           return (
             <Chip
               className="capitalize"
-              color={statusColorMap[pedido.estado]}
+              color={statusColorMap[pedido.estado] || "default"}
               size="sm"
               variant="flat"
             >
@@ -69,7 +110,18 @@ export const PedidosTable = ({
         case "direccion":
           return <div className="truncate max-w-xs">{pedido.direccion}</div>;
         case "telefono":
-          return <div>{pedido.telefono}</div>;
+          return (
+            <Tooltip content="Enviar WhatsApp">
+              <a
+                href={`https://wa.me/${pedido.telefono}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-600 hover:text-green-800 cursor-pointer"
+              >
+                {pedido.telefono}
+              </a>
+            </Tooltip>
+          );
         case "acciones":
           return (
             <div className="relative flex items-center gap-2">
@@ -90,7 +142,10 @@ export const PedidosTable = ({
                 </span>
               </Tooltip>
               <Tooltip color="danger" content="Eliminar pedido">
-                <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <span
+                  className="text-lg text-danger cursor-pointer active:opacity-50"
+                  onClick={() => handleDeleteOrden(pedido.id)}
+                >
                   <DeleteIcon />
                 </span>
               </Tooltip>
@@ -100,7 +155,7 @@ export const PedidosTable = ({
           return cellValue;
       }
     },
-    [openViewModal, openEditModal]
+    [openViewModal, openEditModal, handleDeleteOrden]
   );
 
   return (
@@ -112,15 +167,16 @@ export const PedidosTable = ({
             <div className="flex items-center gap-2">
               <span className="text-sm text-default-400">
                 Mostrando {Math.min(items.length, rowsPerPage)} de{" "}
-                {pedidosFiltrados.length} pedidos
+                {pedidosFiltrados.length} órdenes
               </span>
               <Select
                 size="sm"
                 label="Filas"
                 className="w-20"
-                value={rowsPerPage.toString()}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
+                selectedKeys={[rowsPerPage.toString()]}
+                onSelectionChange={(keys) => {
+                  const value = Array.from(keys)[0];
+                  setRowsPerPage(Number(value));
                   setCurrentPage(1);
                 }}
               >
@@ -145,8 +201,8 @@ export const PedidosTable = ({
       }
       classNames={{
         wrapper: "min-h-[222px]",
-        table: "min-w-[800px]", // Asegura un ancho mínimo para permitir scroll horizontal
-        base: "overflow-x-auto", // Habilita scroll horizontal cuando sea necesario
+        table: "min-w-[800px]",
+        base: "overflow-x-auto",
       }}
     >
       <TableHeader columns={columns}>
@@ -155,7 +211,6 @@ export const PedidosTable = ({
             key={column.uid}
             align={column.uid === "acciones" ? "center" : "start"}
             className={
-              // Ocultar columnas menos importantes en pantallas pequeñas
               column.uid === "direccion"
                 ? "hidden md:table-cell"
                 : column.uid === "telefono"
@@ -169,13 +224,12 @@ export const PedidosTable = ({
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={items} emptyContent={"No se encontraron pedidos."}>
+      <TableBody items={items} emptyContent={"No se encontraron órdenes."}>
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (
               <TableCell
                 className={
-                  // Aplicar las mismas reglas de visibilidad a las celdas
                   columnKey === "direccion"
                     ? "hidden md:table-cell"
                     : columnKey === "telefono"

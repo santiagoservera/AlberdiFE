@@ -1,10 +1,48 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// Función para cargar los datos iniciales del localStorage
+// Función para generar un ID único de sesión
+const generateSessionId = () => {
+  return (
+    "session_" + Math.random().toString(36).substr(2, 9) + "_" + Date.now()
+  );
+};
+
+// Función para obtener o crear un ID de sesión usando cookies
+const getSessionId = () => {
+  // Verificar si estamos en el cliente
+  if (typeof window === "undefined") return "";
+
+  // Buscar cookie existente
+  const cookies = document.cookie.split(";");
+  const sessionCookie = cookies.find((cookie) =>
+    cookie.trim().startsWith("cart_session_id=")
+  );
+
+  if (sessionCookie) {
+    return sessionCookie.split("=")[1].trim();
+  }
+
+  // Si no existe, crear nueva sesión
+  const newSessionId = generateSessionId();
+
+  // Establecer cookie que expire en 30 días
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + 30);
+
+  document.cookie = `cart_session_id=${newSessionId}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax`;
+
+  return newSessionId;
+};
+
+// Función para cargar los datos iniciales del localStorage con sesión
 const getInitialState = () => {
   try {
-    const storedItems = localStorage.getItem("carrito-items");
+    if (typeof window === "undefined") return [];
+
+    const sessionId = getSessionId();
+    const storageKey = `carrito-items-${sessionId}`;
+    const storedItems = localStorage.getItem(storageKey);
     return storedItems ? JSON.parse(storedItems) : [];
   } catch (error) {
     console.error("Error al cargar datos del localStorage:", error);
@@ -12,33 +50,44 @@ const getInitialState = () => {
   }
 };
 
+// Función para obtener la clave de almacenamiento con sesión
+const getStorageKey = () => {
+  if (typeof window === "undefined") return "carrito-storage";
+  const sessionId = getSessionId();
+  return `carrito-storage-${sessionId}`;
+};
+
 const useCarritoStore = create(
   persist(
     (set, get) => ({
       isOpen: false,
-      items: getInitialState(), // Inicializar con datos del localStorage si existen
+      items: getInitialState(),
+      sessionId: typeof window !== "undefined" ? getSessionId() : "",
 
       openCarrito: () => set({ isOpen: true }),
       closeCarrito: () => set({ isOpen: false }),
 
+      // Método para obtener el ID de sesión actual
+      getSessionId: () => {
+        const state = get();
+        return state.sessionId || getSessionId();
+      },
+
       // Método para agregar un producto al carrito
       addToCart: (product) =>
         set((state) => {
-          // Verificar si el producto ya está en el carrito
           const existingItemIndex = state.items.findIndex(
             (item) => item.id === product.id
           );
 
           let updatedItems;
           if (existingItemIndex >= 0) {
-            // Si el producto ya existe, incrementar la cantidad
             updatedItems = [...state.items];
             updatedItems[existingItemIndex] = {
               ...updatedItems[existingItemIndex],
               quantity: updatedItems[existingItemIndex].quantity + 1,
             };
           } else {
-            // Si el producto no existe, agregarlo con cantidad 1
             updatedItems = [...state.items, { ...product, quantity: 1 }];
           }
 
@@ -88,10 +137,27 @@ const useCarritoStore = create(
 
       // Método para limpiar el carrito
       clearCart: () => set({ items: [] }),
+
+      // Método para obtener datos del carrito para el pedido
+      getOrderData: () => {
+        const state = get();
+        return {
+          sessionId: state.sessionId || getSessionId(),
+          items: state.items,
+          total: state.getTotal(),
+          itemCount: state.getItemCount(),
+          timestamp: new Date().toISOString(),
+        };
+      },
     }),
     {
-      name: "carrito-storage", // Nombre único para el almacenamiento
-      getStorage: () => localStorage, // Usar localStorage como almacenamiento
+      name: getStorageKey(),
+      getStorage: () => localStorage,
+      onRehydrateStorage: () => (state) => {
+        if (state && typeof window !== "undefined") {
+          state.sessionId = getSessionId();
+        }
+      },
     }
   )
 );

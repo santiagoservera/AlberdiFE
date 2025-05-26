@@ -1,17 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { SwiperNavButtons } from "../SwiperNavButtons";
 import { useNavigate } from "react-router-dom";
+import useServicios from "../../hooks/useServicios";
 
-// Importaciones de imágenes (asumiendo que están en la ruta correcta)
+// Importaciones de imágenes de respaldo
 import espaciosVerdes from "../../assets/espaciosVerdes.png";
 import limpiezaHospitalaria from "../../assets/limpiezaHospitalaria.png";
 
-// Datos de servicios
-const Servicios = [
+// Datos de servicios estáticos como respaldo
+const ServiciosEstaticos = [
   {
     id: 1,
     nombre: "Mantenimiento de espacios verdes",
@@ -26,33 +27,49 @@ const Servicios = [
       "La limpieza hospitalaria es un servicio altamente especializado que Alberdi S.A.S ofrece, garantizando la eliminación de residuos biomédicos, la desinfección de áreas críticas y el mantenimiento de un entorno seguro y estéril para pacientes y personal médico.",
     imagen: limpiezaHospitalaria,
   },
-  {
-    id: 3,
-    nombre: "Limpieza Hospitalaria",
-    descripcion:
-      "La limpieza hospitalaria es un servicio altamente especializado que Alberdi S.A.S ofrece, garantizando la eliminación de residuos biomédicos, la desinfección de áreas críticas y el mantenimiento de un entorno seguro y estéril para pacientes y personal médico.",
-    imagen: limpiezaHospitalaria,
-  },
-  {
-    id: 4,
-    nombre: "Limpieza Hospitalaria",
-    descripcion:
-      "La limpieza hospitalaria es un servicio altamente especializado que Alberdi S.A.S ofrece, garantizando la eliminación de residuos biomédicos, la desinfección de áreas críticas y el mantenimiento de un entorno seguro y estéril para pacientes y personal médico.",
-    imagen: limpiezaHospitalaria,
-  },
-  {
-    id: 5,
-    nombre: "Limpieza Hospitalaria",
-    descripcion:
-      "La limpieza hospitalaria es un servicio altamente especializado que Alberdi S.A.S ofrece, garantizando la eliminación de residuos biomédicos, la desinfección de áreas críticas y el mantenimiento de un entorno seguro y estéril para pacientes y personal médico.",
-    imagen: limpiezaHospitalaria,
-  },
 ];
 
 const SeleccionServicio = () => {
   const navigate = useNavigate();
-  const [servicioActivo, setServicioActivo] = useState(Servicios[0]);
+  const { servicios, loading } = useServicios();
+
+  // Estado para almacenar los servicios procesados
+  const [serviciosProcesados, setServiciosProcesados] =
+    useState(ServiciosEstaticos);
+  const [servicioActivo, setServicioActivo] = useState(ServiciosEstaticos[0]);
   const [swiperInstance, setSwiperInstance] = useState(null);
+
+  // Procesar los servicios cuando se cargan
+  useEffect(() => {
+    if (!loading && servicios && servicios.length > 0) {
+      // Mapear los servicios reales al formato esperado
+      const serviciosMapeados = servicios.map((servicio) => ({
+        id: servicio.id,
+        nombre: servicio.nombre || "Servicio sin nombre",
+        descripcion: servicio.descripcion || "Sin descripción disponible",
+        imagen:
+          servicio.imagenUrl ||
+          (servicio.nombre?.toLowerCase().includes("verde")
+            ? espaciosVerdes
+            : limpiezaHospitalaria),
+      }));
+
+      // Actualizar el estado con los servicios procesados
+      setServiciosProcesados(serviciosMapeados);
+
+      // Actualizar el servicio activo si es necesario
+      if (swiperInstance) {
+        const activeIndex = swiperInstance.activeIndex || 0;
+        if (serviciosMapeados[activeIndex]) {
+          setServicioActivo(serviciosMapeados[activeIndex]);
+        } else {
+          setServicioActivo(serviciosMapeados[0]);
+        }
+      } else {
+        setServicioActivo(serviciosMapeados[0]);
+      }
+    }
+  }, [servicios, loading, swiperInstance]);
 
   return (
     <>
@@ -105,11 +122,13 @@ const SeleccionServicio = () => {
             modules={[]}
             className="mySwiper servicios"
             onSwiper={setSwiperInstance}
-            onSlideChange={(swiper) =>
-              setServicioActivo(Servicios[swiper.activeIndex])
-            }
+            onSlideChange={(swiper) => {
+              if (serviciosProcesados[swiper.activeIndex]) {
+                setServicioActivo(serviciosProcesados[swiper.activeIndex]);
+              }
+            }}
           >
-            {Servicios.map((servicio) => (
+            {serviciosProcesados.map((servicio) => (
               <SwiperSlide key={servicio.id}>
                 <div className="w-full md:w-[340px] md:h-[450px] flex justify-center items-center object-cover relative">
                   <img

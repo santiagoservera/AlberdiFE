@@ -5,7 +5,7 @@ import { Home } from "./pages/Home";
 import Nosotros from "./pages/Nosotros";
 import Servicios from "./pages/Servicios";
 import Catalogo from "./pages/Catalogo";
-
+import ScrollToTop from "./components/ScrollToTop";
 import ProductoDetalle from "./pages/ProductoDetalle";
 import FormularioServiciosPage from "./pages/FormularioServiciosPage";
 import Carrito from "./components/Carrito";
@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/protected-route";
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Carrito />
       <Routes>
         <Route path="/" element={<Home />} />

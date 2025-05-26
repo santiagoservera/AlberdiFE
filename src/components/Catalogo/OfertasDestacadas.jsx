@@ -1,47 +1,14 @@
-import React from "react";
-import imgProducto from "../../assets/imgProducto.png";
-const productosOfertas = [
-  {
-    id: 1,
-    nombre: "Producto 1",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-  {
-    id: 2,
-    nombre: "Producto 2",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
+import { Link } from "react-router-dom";
+import useProductos from "../../hooks/useProductos";
+import { formatCurrency } from "../../utils/formatCurrency";
 
-  {
-    id: 3,
-    nombre: "Producto 3",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-
-  {
-    id: 4,
-    nombre: "Producto 4",
-    descripcion:
-      "Fórmula versátil que elimina la suciedad y grasa en todo tipo de superficies.",
-    imagen: imgProducto,
-  },
-];
-
-// Función para dividir los productos en grupos de 4
-const chunkArray = (arr, size) => {
-  return arr.reduce((acc, _, i) => {
-    if (i % size === 0) acc.push(arr.slice(i, i + size));
-    return acc;
-  }, []);
-};
 const OfertasDestacadas = () => {
-  const chunkedProductos = chunkArray(productosOfertas, 4);
+  // Obtener productos reales usando el hook
+  const { productos, loading } = useProductos();
+
+  // Tomar solo los primeros 4 productos
+  const productosDestacados = productos.slice(0, 4);
+
   return (
     <div className="w-full h-auto mt-20">
       <div className="containerWidth flex flex-col justify-center items-center">
@@ -51,31 +18,50 @@ const OfertasDestacadas = () => {
           </p>
         </div>
 
-        {chunkedProductos.map((grupo, index) => (
-          <div
-            key={index}
-            className="flex flex-wrap justify-center gap-7 md:gap-0 w-full md:justify-between  my-10"
-          >
-            {grupo.map((producto) => (
-              <div
+        {loading ? (
+          <div className="flex justify-center items-center h-64 w-full">
+            <p className="text-textoVerde font-firelli font-bold">
+              Cargando productos destacados...
+            </p>
+          </div>
+        ) : productosDestacados.length > 0 ? (
+          <div className="flex flex-wrap justify-center gap-7 md:gap-0 w-full md:justify-between my-10">
+            {productosDestacados.map((producto) => (
+              <Link
+                to={`/Catalogo/producto/${producto.id}`}
                 key={producto.id}
-                className="flex flex-col justify-center gap-1 w-[200px] hover:bg-[#F4EAE2] hover:rounded-lg hover:shadow-2xl cursor-pointer"
+                className="flex flex-col justify-center gap-1 w-[200px] hover:bg-[#F4EAE2] hover:rounded-lg hover:shadow-2xl p-2 cursor-pointer"
               >
                 <img
-                  src={producto.imagen}
+                  src={producto.imagenUrl || "/placeholder.svg"}
                   alt={producto.nombre}
-                  className="w-[200px] h-[200px]"
+                  className="w-[200px] h-[200px] object-cover rounded-lg"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/placeholder.svg";
+                  }}
                 />
                 <h1 className="text-textoVerde font-firelli md:text-2xl text-3xl font-bold">
                   {producto.nombre}
                 </h1>
                 <p className="md:text-sm text-lg text-textoVerde font-firelli">
-                  {producto.descripcion}
+                  {producto.descripcion_corta || producto.descripcion}
                 </p>
-              </div>
+                {producto.precioActual && (
+                  <p className="text-textoVerde font-firelli font-bold">
+                    {formatCurrency(producto.precioActual)}
+                  </p>
+                )}
+              </Link>
             ))}
           </div>
-        ))}
+        ) : (
+          <div className="flex justify-center items-center h-64 w-full">
+            <p className="text-textoVerde font-firelli font-bold">
+              No hay productos destacados disponibles.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

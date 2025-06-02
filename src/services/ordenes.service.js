@@ -51,16 +51,10 @@ const ordenesService = {
     }
   },
 
-  // Actualizar el estado de una orden
   updateOrdenStatus: async (ordenId, nuevoEstado) => {
     try {
-      console.log(
-        "🔄 Actualizando estado de orden:",
-        ordenId,
-        "a:",
-        nuevoEstado
-      );
-      const response = await api.patch(`/ordenes/${ordenId}/estado`, {
+      console.log("🔄 Actualizando estado de orden:", ordenId, nuevoEstado);
+      const response = await api.put(`/ordenes/${ordenId}`, {
         estado: nuevoEstado,
       });
       console.log("📦 Respuesta de updateOrdenStatus:", response.data);
@@ -71,7 +65,6 @@ const ordenesService = {
     }
   },
 
-  // Actualizar una orden completa
   updateOrden: async (id, ordenData) => {
     try {
       console.log("🔄 Actualizando orden completa:", id, ordenData);

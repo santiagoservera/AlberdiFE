@@ -207,7 +207,7 @@ const useOrdenes = () => {
   };
 
   return {
-    ordenes: Array.isArray(ordenes) ? ordenes : [], // Asegurar que siempre retorne un array
+    ordenes: Array.isArray(ordenes) ? ordenes : [],
     loading,
     error,
     fetchOrdenes,

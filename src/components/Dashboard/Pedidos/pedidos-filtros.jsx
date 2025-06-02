@@ -1,14 +1,13 @@
 "use client";
-import { Input, Select, SelectItem } from "@nextui-org/react";
+
+import { Input, Select, SelectItem, Checkbox } from "@heroui/react";
 
 // Estados de pedido actualizados para la API real
 export const estadosPedidoFiltro = [
   { key: "", value: "Todos los estados" },
   { key: "pendiente", value: "Pendiente" },
-  { key: "confirmado", value: "Confirmado" },
-  { key: "enviado", value: "Enviado" },
-  { key: "entregado", value: "Entregado" },
-  { key: "cancelado", value: "Cancelado" },
+  { key: "rechazado", value: "Rechazado" },
+  { key: "aceptado", value: "Aceptado" },
 ];
 
 // Tipos de pedido basados en service_id
@@ -20,9 +19,9 @@ export const tiposPedidoFiltro = [
 
 export const PedidosFiltros = ({
   filtros,
-  soloFinalizados,
+  soloAceptados,
   handleChange,
-  setSoloFinalizados,
+  setSoloAceptados,
 }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -33,6 +32,7 @@ export const PedidosFiltros = ({
         placeholder="Nombre del cliente"
         value={filtros.nombre}
         onChange={handleChange}
+        variant="bordered"
         className="w-full"
       />
       <Select
@@ -44,6 +44,7 @@ export const PedidosFiltros = ({
           const value = Array.from(keys)[0] || "";
           handleChange({ target: { name: "estado", value } });
         }}
+        variant="bordered"
         className="w-full"
       >
         {estadosPedidoFiltro.map((estado) => (
@@ -61,6 +62,7 @@ export const PedidosFiltros = ({
           const value = Array.from(keys)[0] || "";
           handleChange({ target: { name: "tipo", value } });
         }}
+        variant="bordered"
         className="w-full"
       >
         {tiposPedidoFiltro.map((tipo) => (
@@ -75,17 +77,17 @@ export const PedidosFiltros = ({
         label="Fecha"
         value={filtros.fecha}
         onChange={handleChange}
+        variant="bordered"
         className="w-full"
       />
-      <div className="flex items-center ml-2 mt-2">
-        <input
-          type="checkbox"
-          id="soloFinalizados"
-          checked={soloFinalizados}
-          onChange={() => setSoloFinalizados(!soloFinalizados)}
-          className="mr-2"
-        />
-        <label htmlFor="soloFinalizados">Solo finalizados</label>
+      <div className="flex items-center">
+        <Checkbox
+          isSelected={soloAceptados}
+          onValueChange={setSoloAceptados}
+          color="success"
+        >
+          Solo aceptados
+        </Checkbox>
       </div>
     </div>
   );

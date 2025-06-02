@@ -32,6 +32,7 @@ import {
   Trash2,
   AlertCircle,
 } from "lucide-react";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const SeccionProductos = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -651,7 +652,7 @@ const SeccionProductos = () => {
                         {producto.descripcion}
                       </p>
                       <p className="text-sm font-semibold mt-2">
-                        ${producto.precioActual}
+                        {formatCurrency(producto.precioActual)}
                       </p>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {producto.subcategoria && (

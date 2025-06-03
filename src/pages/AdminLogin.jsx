@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 
 const AdminLogin = () => {
   return (
-    <div className="bg-home">
+    <div className="">
       <Navbar />
       <CardLogin />
       <Footer />

@@ -292,10 +292,6 @@ export const PedidosTable = ({
         {pages > 0 && (
           <div className="flex flex-col gap-3 mt-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-default-400">
-                Mostrando {Math.min(items.length, rowsPerPage)} de{" "}
-                {pedidosFiltrados.length} órdenes
-              </span>
               <Select
                 size="sm"
                 label="Filas"
@@ -337,10 +333,6 @@ export const PedidosTable = ({
             pages > 0 ? (
               <div className="flex w-full justify-between items-center">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-default-400">
-                    Mostrando {Math.min(items.length, rowsPerPage)} de{" "}
-                    {pedidosFiltrados.length} órdenes
-                  </span>
                   <Select
                     size="sm"
                     label="Filas"

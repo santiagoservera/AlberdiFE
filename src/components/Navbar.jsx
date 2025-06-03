@@ -1,10 +1,9 @@
-"use client";
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 //images
 import logoAlberdi from "../assets/LogoAlberdi.png";
+import logoAlberdiBeige from "../assets/LogoAlberdiBeige.png";
 import CarritoImg from "../assets/Carrito.png";
 import { Button } from "@heroui/react";
 import Carrito from "../components/Carrito";
@@ -41,6 +40,10 @@ export const Navbar = () => {
 
   const itemCount = getItemCount();
 
+  if (isDashboard) {
+    return null;
+  }
+
   return (
     <header
       className="w-full z-10 relative "
@@ -48,24 +51,31 @@ export const Navbar = () => {
     >
       <nav className="containerWidth flex h-full w-full gap-3 justify-between ">
         <div
-          className={`flex h-full py-[20px] gap-1 my-5 ${
-            location.pathname.includes("/Admin")
-              ? "bg-white rounded-full px-5 mt-2 "
+          className={`flex h-full gap-1 my-5 ${
+            isDashboard
+              ? "absolute left-4 top-1/2 transform -translate-y-1/2"
+              : location.pathname.includes("/Admin")
+              ? ""
               : ""
           }`}
         >
           <Link to="/" className="flex items-center gap-2">
             <img
-              src={logoAlberdi || "/placeholder.svg"}
+              src={
+                isDashboard
+                  ? logoAlberdiBeige
+                  : logoAlberdi || "/placeholder.svg"
+              }
               className={
                 location.pathname.includes("/Admin")
-                  ? "h-[50px] w-[52px]"
+                  ? "h-[100px] w-[100px]"
                   : "h-[60px] w-[62px]"
               }
               alt="Logo Alberdi"
             />
           </Link>
         </div>
+
         {mostrarItems && (
           <div className="flex w-1/2 justify-between items-center text-textoVerde">
             <div className="hidden md:flex items-center font-bold ">
@@ -81,7 +91,7 @@ export const Navbar = () => {
                 to="/Catalogo"
                 className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
               >
-                Productos
+                Catalogo
               </Link>
             </div>
             <div className="hidden md:flex items-center font-bold ">
@@ -106,30 +116,6 @@ export const Navbar = () => {
                 className="hover:cursor-pointer text-lg hover:bg-[#4F6B5F] hover:rounded-full hover:text-[#F4EAE2] p-2"
               >
                 Nosotros
-              </Link>
-            </div>
-            <div className="hidden md:flex items-center font-bold ">
-              <Link
-                to="/Admin"
-                className="hover:cursor-pointer text-lg hover:rounded-full hover:text-[#F4EAE2] p-2"
-              >
-                <Tooltip content="Admin">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                  >
-                    <g fill="none" stroke="#4F6B5F" strokeWidth="1.5">
-                      <circle cx="12" cy="9" r="3" />
-                      <circle cx="12" cy="12" r="10" />
-                      <path
-                        strokeLinecap="round"
-                        d="M17.97 20c-.16-2.892-1.045-5-5.97-5s-5.81 2.108-5.97 5"
-                      />
-                    </g>
-                  </svg>
-                </Tooltip>
               </Link>
             </div>
 

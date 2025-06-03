@@ -45,7 +45,6 @@ const useAuthStore = create(
         }
       },
 
-      // Función para cerrar sesión
       logout: () => {
         set({
           token: null,
@@ -55,8 +54,8 @@ const useAuthStore = create(
       },
     }),
     {
-      name: "auth-storage", // nombre para localStorage
-      getStorage: () => localStorage, // usar localStorage
+      name: "auth-storage",
+      getStorage: () => localStorage,
     }
   )
 );

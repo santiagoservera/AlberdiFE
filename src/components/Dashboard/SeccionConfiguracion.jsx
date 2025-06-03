@@ -160,7 +160,7 @@ function SeccionConfiguracion() {
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <Toaster />
-          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-success-400 to-success-600 rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-lg">
+          <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-success-300 to-[#4F6B5F] rounded-xl sm:rounded-2xl mb-4 sm:mb-6 shadow-lg">
             <Settings className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
           </div>
           <h1 className="font-firelli text-2xl sm:text-3xl lg:text-4xl text-textoVerde mb-2 sm:mb-3 px-4">
@@ -174,11 +174,11 @@ function SeccionConfiguracion() {
 
         {/* Main Configuration Card */}
         <Card className="mb-4 sm:mb-6 shadow-xl">
-          <CardHeader className="bg-gradient-to-r from-success-50 to-success-100 pb-4 sm:pb-6">
+          <CardHeader className="bg-gradient-to-r from-success-50 to-success-[#4F6B5F] pb-4 sm:pb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-4">
               <div className="flex items-center">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-success-100 rounded-xl flex items-center justify-center mr-3 sm:mr-4">
-                  <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-success-600" />
+                  <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-textVerde" />
                 </div>
                 <div>
                   <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
@@ -192,11 +192,10 @@ function SeccionConfiguracion() {
 
               {!isEditing && (
                 <Button
-                  color="success"
                   variant="shadow"
                   startContent={<Edit3 className="w-4 h-4" />}
                   onPress={handleEdit}
-                  className="font-medium w-full sm:w-auto"
+                  className="font-medium w-full sm:w-auto bg-[#4F6B5F] text-white"
                   size="sm"
                 >
                   Editar

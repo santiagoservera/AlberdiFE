@@ -77,7 +77,7 @@ function ProductosDestacados() {
         <div className="flex justify-center">
           <Link
             to="/Catalogo"
-            className="rounded-full bg-button py-1 px-3 text-[#FBF7F4] text-sm hover:bg-[#2c3b35] font-firelli"
+            className="rounded-full bg-button py-3 px-5 text-[#FBF7F4] text-lg hover:bg-[#2c3b35] font-firelli"
           >
             Explorar catálogo
           </Link>

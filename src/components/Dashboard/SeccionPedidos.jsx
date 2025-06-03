@@ -457,11 +457,10 @@ const SeccionPedidos = () => {
           </h2>
         </div>
         <Button
-          color="success"
           variant="shadow"
           startContent={<Plus className="w-4 h-4" />}
           onPress={openCreateModal}
-          className="font-firelli font-medium"
+          className="font-firelli font-medium bg-[#4F6B5F] text-white"
         >
           Nueva Orden
         </Button>

@@ -33,61 +33,17 @@ const Carrito = () => {
   };
 
   const handleRemoveItem = (itemId, itemName) => {
-    toast(
-      (t) => (
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">🗑️</span>
-            <div>
-              <p className="font-semibold text-gray-800">¿Eliminar producto?</p>
-              <p className="text-sm text-gray-600">
-                ¿Estás seguro de que quieres eliminar "{itemName}" del carrito?
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-2 justify-end mt-2">
-            <button
-              onClick={() => toast.dismiss(t.id)}
-              className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={() => {
-                removeFromCart(itemId);
-                toast.dismiss(t.id);
-                toast.success(`${itemName} eliminado del carrito`, {
-                  duration: 2000,
-                  position: "bottom-center",
-                  style: {
-                    background: "#dcfce7",
-                    color: "#166534",
-                    border: "1px solid #bbf7d0",
-                  },
-                  icon: "✅",
-                });
-              }}
-              className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-            >
-              Eliminar
-            </button>
-          </div>
-        </div>
-      ),
-      {
-        duration: Number.POSITIVE_INFINITY,
-        position: "top-center",
-        style: {
-          background: "#fff",
-          color: "#374151",
-          border: "2px solid #ef4444",
-          borderRadius: "12px",
-          padding: "16px",
-          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-          maxWidth: "350px",
-        },
-      }
-    );
+    removeFromCart(itemId);
+    toast.success(`${itemName} eliminado del carrito`, {
+      duration: 2000,
+      position: "bottom-center",
+      style: {
+        background: "#dcfce7",
+        color: "#166534",
+        border: "1px solid #bbf7d0",
+      },
+      icon: "✅",
+    });
   };
 
   const handleIncrementQuantity = (itemId, itemName) => {
@@ -215,13 +171,6 @@ const Carrito = () => {
                 <span>Total a pagar:</span>
                 <span className="text-xl">${getTotal().toFixed(2)}</span>
               </div>
-              <p className="text-sm text-center font-firelli text-textoVerde mt-1">
-                {items.reduce((total, item) => total + item.quantity, 0)}{" "}
-                producto
-                {items.reduce((total, item) => total + item.quantity, 0) !== 1
-                  ? "s"
-                  : ""}
-              </p>
             </div>
 
             <Button

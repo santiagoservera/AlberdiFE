@@ -1,5 +1,5 @@
 import React from "react";
-import Nosotros from "../../assets/Nosotros.png";
+import Nosotros from "../../assets/Nosotros.jpg";
 import DivisorHome from "../Home/DivisorHome";
 
 const NosotrosSection = () => {

@@ -92,7 +92,7 @@ const BeneficiosSection = () => {
                 <img
                   src={beneficio.imagen}
                   alt={beneficio.nombre}
-                  className="h-[200px] w-[150px] rounded-lg cursor-pointer"
+                  className="h-[200px] w-[200px] rounded-lg cursor-pointer object-cover"
                 />
               </div>
               <p className="py-2 font-firelli text-textoVerde text-center">

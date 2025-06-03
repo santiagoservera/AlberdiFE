@@ -6,10 +6,13 @@ import SeccionPedidos from "./SeccionPedidos";
 import SeccionCategorias from "./SeccionCategorias";
 import SeccionConfiguracion from "./SeccionConfiguracion";
 import logoBeige from "../../assets/LogoAlberdiBeige.png";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [seccionActual, setSeccionActual] = useState("Productos");
   const { logout } = useAuthStore();
+
+  const navigate = useNavigate();
 
   const secciones = [
     "Productos",
@@ -21,23 +24,26 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.href = "/admin";
+    navigate("/admin");
   };
 
   return (
-    <div className="flex min-h-screen ">
+    <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
-      <aside className="md:w-64 bg-[#4F6B5F] text-white p-4 font-firelli flex flex-col">
-        <div className="flex w-full justify-center">
+      <aside className="md:w-64 bg-[#4F6B5F] text-white p-4 font-firelli flex flex-col h-full">
+        {/* Logo - Fixed */}
+        <div className="flex w-full justify-center flex-shrink-0">
           <img
             src={logoBeige || "/placeholder.svg"}
             alt="logo"
             className="w-[100px] h-[100px]"
           />
         </div>
-        <div className="flex flex-col pt-14 flex-1">
+
+        {/* Navigation - Scrollable */}
+        <div className="flex flex-col pt-14 flex-1 overflow-y-auto">
           <h2 className="text-3xl font-bold mb-4 px-2">Panel</h2>
-          <ul className=" flex gap-1 flex-col ">
+          <ul className="flex gap-1 flex-col">
             {secciones.map((seccion) => (
               <li
                 key={seccion}
@@ -52,11 +58,31 @@ const Dashboard = () => {
           </ul>
         </div>
 
-        {/* Botón de Logout */}
-        <div className="mt-auto pt-6">
+        {/* User Info - Fixed above logout */}
+        <div className="flex-shrink-0 px-2 py-4 border-t border-[#304139]">
+          <div className="flex items-center space-x-3">
+            {/* Avatar */}
+            <div className="w-10 h-10 bg-gradient-to-r from-amber-100 to-stone-200 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-[#4F6B5F] font-bold text-sm">AS</span>
+            </div>
+
+            {/* User Info */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-white truncate">
+                Alberdi Servicios
+              </p>
+              <p className="text-xs text-stone-300 truncate">
+                alberdiserviciosas@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Botón de Logout - Fixed at bottom */}
+        <div className="pt-2 flex-shrink-0">
           <button
             onClick={handleLogout}
-            className="w-full group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out"
+            className="w-full group relative overflow-hidden bg-gradient-to-r from-amber-50 to-stone-200 hover:from-amber-100 hover:to-stone-300 text-[#4F6B5F] font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 ease-in-out"
           >
             <div className="flex items-center justify-center space-x-2">
               <svg
@@ -84,8 +110,8 @@ const Dashboard = () => {
       </aside>
 
       {/* Contenido principal */}
-      <main className="flex-1 p-6">
-        <div>
+      <main className="flex-1 overflow-y-auto">
+        <div className="p-6">
           {/* Seccion Productos */}
           {seccionActual === "Productos" && <SeccionProductos />}
           {/* Seccion Servicios */}

@@ -24,9 +24,6 @@ const Carrito = () => {
     getTotal,
   } = useCarritoStore();
 
-  console.log("Carrito component - isOpen:", isOpen);
-  console.log("Carrito items:", items);
-
   const handleFinalizarCompra = () => {
     closeCarrito(); // Cerrar el carrito
     navigate("/FormularioProductos"); // Navegar al formulario

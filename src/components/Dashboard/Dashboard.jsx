@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import SeccionProductos from "./SeccionProductos";
 import SeccionServicios from "./SeccionServicios";
@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [seccionActual, setSeccionActual] = useState("Productos");
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore(); // Extraemos la información del usuario
 
   const navigate = useNavigate();
 
@@ -25,6 +25,38 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate("/admin");
+  };
+
+  // Función para obtener las iniciales del usuario
+  const getUserInitials = (user) => {
+    if (!user) return "U";
+
+    if (user.name) {
+      return user.name
+        .split(" ")
+        .map((word) => word.charAt(0))
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+    }
+
+    if (user.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+
+    return "U";
+  };
+
+  // Función para obtener el nombre a mostrar
+  const getDisplayName = (user) => {
+    if (!user) return "Usuario";
+    return user.name || user.username || "Usuario";
+  };
+
+  // Función para obtener el email a mostrar
+  const getDisplayEmail = (user) => {
+    if (!user) return "usuario@ejemplo.com";
+    return user.email || "Sin email";
   };
 
   return (
@@ -61,18 +93,20 @@ const Dashboard = () => {
         {/* User Info - Fixed above logout */}
         <div className="flex-shrink-0 px-2 py-4 border-t border-[#304139]">
           <div className="flex items-center space-x-3">
-            {/* Avatar */}
+            {/* Avatar con iniciales reales del usuario */}
             <div className="w-10 h-10 bg-gradient-to-r from-amber-100 to-stone-200 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-[#4F6B5F] font-bold text-sm">AS</span>
+              <span className="text-[#4F6B5F] font-bold text-sm">
+                {getUserInitials(user)}
+              </span>
             </div>
 
-            {/* User Info */}
+            {/* User Info Real */}
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">
-                Alberdi Servicios
+              <p className="text-sm font-semibold text-white truncate capitalize">
+                {getDisplayName(user)}
               </p>
-              <p className="text-xs text-stone-300 truncate">
-                alberdiserviciosas@gmail.com
+              <p className="text-xs text-stone-300 truncate capitalize">
+                {getDisplayEmail(user)}
               </p>
             </div>
           </div>

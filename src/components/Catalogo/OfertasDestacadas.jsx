@@ -35,7 +35,7 @@ const OfertasDestacadas = () => {
                 <img
                   src={producto.imagenUrl || "/placeholder.svg"}
                   alt={producto.nombre}
-                  className="w-[200px] h-[200px] object-cover rounded-lg"
+                  className="w-[200px] h-[250px] rounded-lg"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "/placeholder.svg";

@@ -375,7 +375,7 @@ const CatalogoProductos = () => {
                 <Link
                   to={`/Catalogo/producto/${producto.id}`}
                   key={producto.id}
-                  className="flex flex-col justify-center gap-1 w-[200px] hover:bg-[#F4EAE2] hover:rounded-lg hover:shadow-2xl p-2 cursor-pointer transition-all duration-200 transform hover:scale-105"
+                  className="flex flex-col items-center justify-center gap-1 w-[200px] hover:bg-[#F4EAE2] hover:rounded-lg hover:shadow-2xl p-2 cursor-pointer transition-all duration-200 transform hover:scale-105"
                   onClick={(e) => {
                     if (!handleProductClick(producto)) {
                       e.preventDefault();
@@ -385,7 +385,7 @@ const CatalogoProductos = () => {
                   <img
                     src={producto.imagenUrl || "/placeholder.svg"}
                     alt={producto.nombre}
-                    className="w-[200px] h-[200px] object-cover rounded-lg"
+                    className="w-[100px] h-[150px]  rounded-lg"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = "/placeholder.svg";

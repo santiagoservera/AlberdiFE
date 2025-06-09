@@ -33,10 +33,18 @@ const Footer = () => {
           </p>
         </div>
         <div className="flex flex-col justify-center items-start gap-3 text-[#F4EAE2] font-firelli font-bold">
-          <p>Home</p>
-          <p>Contacto</p>
-          <p>Nosotros</p>
-          <p>Preguntas Frecuentes</p>
+          <Link to="/" className="hover:text-white">
+            <p>Home</p>
+          </Link>
+          <Link to="/" className="hover:text-white">
+            <p>Contacto</p>
+          </Link>
+          <Link to="/Nosotros" className="hover:text-white">
+            <p>Nosotros</p>
+          </Link>
+          <Link to="/" className="hover:text-white">
+            <p>Preguntas Frecuentes</p>
+          </Link>
         </div>
       </div>
     </div>

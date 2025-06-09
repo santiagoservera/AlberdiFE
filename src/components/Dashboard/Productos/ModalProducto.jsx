@@ -46,6 +46,14 @@ const ModalProducto = ({
   const [subcategorias, setSubcategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
 
+  // Manejar cambio de precio
+  const handlePriceChange = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      precioActual: value,
+    }));
+  };
+
   // Resetear el formulario cuando se abre el modal
   useEffect(() => {
     if (isOpen) {

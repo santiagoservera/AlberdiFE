@@ -164,14 +164,6 @@ export const PedidosTable = ({
                   <EditIcon />
                 </span>
               </Tooltip>
-              <Tooltip color="danger" content="Eliminar pedido">
-                <span
-                  className="text-lg text-danger cursor-pointer active:opacity-50"
-                  onClick={() => handleDeleteOrden(pedido.id)}
-                >
-                  <DeleteIcon />
-                </span>
-              </Tooltip>
             </div>
           );
         default:

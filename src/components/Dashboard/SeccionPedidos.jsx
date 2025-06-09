@@ -39,6 +39,7 @@ const SeccionPedidos = () => {
     fecha: "",
   });
   const [soloAceptados, setSoloAceptados] = useState(false);
+  const [incluirRechazadas, setIncluirRechazadas] = useState(false);
 
   // Estado para paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -64,22 +65,12 @@ const SeccionPedidos = () => {
 
   // Transformar órdenes reales al formato esperado por la tabla
   const ordenesTransformadas = useMemo(() => {
-    console.log("=== TRANSFORMANDO ÓRDENES ===");
-    console.log("Órdenes recibidas:", ordenes);
-    console.log("Es array?", Array.isArray(ordenes));
-    console.log("Longitud:", ordenes?.length);
-
     // Verificar si ordenes es un array válido
     if (!Array.isArray(ordenes) || ordenes.length === 0) {
-      console.log("❌ Ordenes no es un array válido o está vacío");
       return [];
     }
 
-    console.log("✅ Procesando", ordenes.length, "órdenes");
-
     const transformadas = ordenes.map((orden, index) => {
-      console.log(`Procesando orden ${index + 1}:`, orden);
-
       // Determinar tipo basado en service_id
       const tipo = orden.service_id ? "Servicio" : "Producto";
 
@@ -132,13 +123,8 @@ const SeccionPedidos = () => {
         updated_at: orden.updated_at,
       };
 
-      console.log(`✅ Orden ${index + 1} transformada:`, ordenTransformada);
       return ordenTransformada;
     });
-
-    console.log("=== RESULTADO TRANSFORMACIÓN ===");
-    console.log("Total transformadas:", transformadas.length);
-    console.log("Órdenes transformadas:", transformadas);
 
     return transformadas;
   }, [ordenes, servicios]);
@@ -162,6 +148,10 @@ const SeccionPedidos = () => {
         return false;
       }
 
+      if (!incluirRechazadas && p.estado === "rechazado") {
+        return false;
+      }
+
       const coincideEstado =
         filtros.estado === "" || p.estado === filtros.estado;
       const coincideTipo = filtros.tipo === "" || p.tipo === filtros.tipo;
@@ -174,7 +164,7 @@ const SeccionPedidos = () => {
 
       return coincideEstado && coincideTipo && coincideNombre && coincideFecha;
     });
-  }, [ordenesTransformadas, filtros, soloAceptados]);
+  }, [ordenesTransformadas, filtros, soloAceptados, incluirRechazadas]);
 
   // Paginación
   const items = useMemo(() => {
@@ -393,11 +383,6 @@ const SeccionPedidos = () => {
     [pedidosFiltrados]
   );
   const itemsMemo = useMemo(() => items, [items]);
-  console.log("Órdenes raw:", ordenes);
-  console.log("Servicios:", servicios);
-  console.log("Órdenes transformadas:", ordenesTransformadas);
-  console.log("Pedidos filtrados:", pedidosFiltradosMemo);
-  console.log("Items para tabla:", itemsMemo);
 
   useEffect(() => {
     fetchOrdenes();
@@ -474,6 +459,8 @@ const SeccionPedidos = () => {
             soloAceptados={soloAceptados}
             handleChange={handleChange}
             setSoloAceptados={setSoloAceptados}
+            incluirRechazadas={incluirRechazadas}
+            setIncluirRechazadas={setIncluirRechazadas}
           />
         </CardBody>
       </Card>

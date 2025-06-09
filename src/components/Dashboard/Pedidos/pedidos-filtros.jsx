@@ -17,14 +17,24 @@ export const tiposPedidoFiltro = [
   { key: "Servicio", value: "Servicios" },
 ];
 
+// Función para obtener estados por defecto (sin rechazados)
+export const getDefaultEstadoFilter = () => {
+  return ["pendiente", "aceptado"];
+};
+
+// Estados que se muestran por defecto
+export const estadosVisiblesPorDefecto = ["pendiente", "aceptado"];
+
 export const PedidosFiltros = ({
   filtros,
   soloAceptados,
   handleChange,
   setSoloAceptados,
+  incluirRechazadas = false,
+  setIncluirRechazadas,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
       <Input
         type="text"
         name="nombre"
@@ -71,15 +81,7 @@ export const PedidosFiltros = ({
           </SelectItem>
         ))}
       </Select>
-      <Input
-        type="date"
-        name="fecha"
-        label="Fecha"
-        value={filtros.fecha}
-        onChange={handleChange}
-        variant="bordered"
-        className="w-full"
-      />
+
       <div className="flex items-center">
         <Checkbox
           isSelected={soloAceptados}
@@ -87,6 +89,16 @@ export const PedidosFiltros = ({
           color="success"
         >
           Solo aceptados
+        </Checkbox>
+      </div>
+
+      <div className="flex items-center">
+        <Checkbox
+          isSelected={incluirRechazadas}
+          onValueChange={setIncluirRechazadas}
+          color="danger"
+        >
+          Incluir rechazadas
         </Checkbox>
       </div>
     </div>

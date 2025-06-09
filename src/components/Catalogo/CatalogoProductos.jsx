@@ -364,13 +364,13 @@ const CatalogoProductos = () => {
           {/* Lista de productos */}
           {loadingProductos ? (
             <div className="flex flex-col justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4F6B5F] mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4F6B5F] mb-4 "></div>
               <p className="text-textoVerde font-firelli font-bold">
                 Cargando productos...
               </p>
             </div>
           ) : productosFiltrados.length > 0 ? (
-            <div className="flex flex-wrap justify-center md:justify-start gap-9 my-10">
+            <div className="flex flex-wrap justify-center md:justify-start gap-9 my-10 bg-[#F4EAE2]">
               {productosFiltrados.map((producto) => (
                 <Link
                   to={`/Catalogo/producto/${producto.id}`}
@@ -400,7 +400,7 @@ const CatalogoProductos = () => {
                       "Sin descripción"}
                   </p>
                   {(producto.precioActual || producto.precio) && (
-                    <p className="text-textoVerde font-firelli font-bold">
+                    <p className="text-textoVerde font-firelli font-bold text-xl">
                       {formatCurrency(producto.precioActual || producto.precio)}
                     </p>
                   )}

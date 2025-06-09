@@ -536,26 +536,29 @@ export const EditModal = ({
                   label="Nombre"
                   name="nombre"
                   value={editingPedido.nombre || ""}
-                  onChange={handleEditChange}
-                  variant="bordered"
+                  variant="flat"
+                  color="default"
                   size="sm"
+                  isReadOnly={true}
                 />
                 <Input
                   label="Email"
                   name="email"
                   type="email"
                   value={editingPedido.email || ""}
-                  onChange={handleEditChange}
-                  variant="bordered"
+                  variant="flat"
+                  color="default"
                   size="sm"
+                  isReadOnly={true}
                 />
                 <Input
                   label="Teléfono"
                   name="telefono"
                   value={editingPedido.telefono || ""}
-                  onChange={handleEditChange}
-                  variant="bordered"
+                  variant="flat"
+                  color="default"
                   size="sm"
+                  isReadOnly={true}
                 />
 
                 <CustomSelect
@@ -571,10 +574,11 @@ export const EditModal = ({
                     label="Dirección"
                     name="direccion"
                     value={editingPedido.direccion || ""}
-                    onChange={handleEditChange}
-                    variant="bordered"
+                    variant="flat"
+                    color="default"
                     minRows={2}
                     size="sm"
+                    isReadOnly={true}
                   />
                 </div>
               </div>
@@ -719,7 +723,8 @@ export const ViewModal = ({
                             className="object-cover rounded-lg w-16 h-16 sm:w-20 sm:h-20"
                             src={
                               servicio.imagenUrl ||
-                              "/placeholder.svg?height=80&width=80"
+                              "/placeholder.svg?height=80&width=80" ||
+                              "/placeholder.svg"
                             }
                           />
                           <div className="flex-1">
@@ -745,7 +750,8 @@ export const ViewModal = ({
                                 className="object-cover rounded-lg w-12 h-12 sm:w-16 sm:h-16"
                                 src={
                                   producto.imagenUrl ||
-                                  "/placeholder.svg?height=64&width=64"
+                                  "/placeholder.svg?height=64&width=64" ||
+                                  "/placeholder.svg"
                                 }
                               />
                               <div className="flex-1">
@@ -964,7 +970,8 @@ const ProductSelector = ({
                   className="object-cover rounded-lg w-full h-24 sm:h-32"
                   src={
                     producto.imagenUrl ||
-                    "/placeholder.svg?height=128&width=200"
+                    "/placeholder.svg?height=128&width=200" ||
+                    "/placeholder.svg"
                   }
                 />
                 <div>
@@ -1141,12 +1148,12 @@ export const CreateModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      size={{ "@initial": "full", "@md": "3xl" }}
-      scrollBehavior="outside"
+      size={{ "@initial": "full", "@md": "4xl" }}
+      scrollBehavior="inside"
       placement="center"
       classNames={{
-        base: "max-h-[90vh] sm:max-h-[85vh]",
-        body: "p-3 sm:p-5",
+        base: "max-h-[95vh] min-h-[80vh]",
+        body: "p-3 sm:p-5 max-h-[70vh] overflow-y-auto",
       }}
     >
       <ModalContent>

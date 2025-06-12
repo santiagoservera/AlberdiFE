@@ -22,7 +22,7 @@ const useCategorias = () => {
       const response = await categoriasService.getAll(params);
 
       // Extraer las categorías del objeto paginado
-      const categoriasData = response.data?.data || [];
+      const categoriasData = response.data || [];
       setCategorias(categoriasData);
 
       // Guardar información de paginación

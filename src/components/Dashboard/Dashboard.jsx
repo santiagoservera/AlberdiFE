@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import useAuthStore from "../../store/useAuthStore";
 import SeccionProductos from "./SeccionProductos";
@@ -7,17 +9,19 @@ import SeccionCategorias from "./SeccionCategorias";
 import SeccionConfiguracion from "./SeccionConfiguracion";
 import logoBeige from "../../assets/LogoAlberdiBeige.png";
 import { useNavigate } from "react-router-dom";
+import { Menu, X } from "lucide-react";
 
 const Dashboard = () => {
   const [seccionActual, setSeccionActual] = useState("Productos");
-  const { logout, user } = useAuthStore(); // Extraemos la información del usuario
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { logout, user } = useAuthStore();
 
   const navigate = useNavigate();
 
   const secciones = [
     "Productos",
     "Servicios",
-    "Pedidos",
+    "Ordenes",
     "Categorias",
     "Configuracion",
   ];
@@ -25,6 +29,11 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate("/admin");
+  };
+
+  const handleSectionChange = (seccion) => {
+    setSeccionActual(seccion);
+    setSidebarOpen(false); // Cerrar sidebar en mobile al seleccionar
   };
 
   // Función para obtener las iniciales del usuario
@@ -61,28 +70,50 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
+      {/* Overlay para mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="md:w-64 bg-[#4F6B5F] text-white p-4 font-firelli flex flex-col h-full">
-        {/* Logo - Fixed */}
-        <div className="flex w-full justify-center flex-shrink-0">
+      <aside
+        className={`
+          fixed lg:static inset-y-0 left-0 z-50
+          w-64 bg-[#4F6B5F] text-white p-4 font-firelli flex flex-col h-full
+          transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          lg:translate-x-0
+        `}
+      >
+        {/* Header con botón cerrar en mobile */}
+        <div className="flex items-center justify-between lg:justify-center mb-4">
           <img
             src={logoBeige || "/placeholder.svg"}
             alt="logo"
-            className="w-[100px] h-[100px]"
+            className="w-[80px] h-[80px] lg:w-[100px] lg:h-[100px]"
           />
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden text-white hover:text-gray-300"
+          >
+            <X size={24} />
+          </button>
         </div>
 
         {/* Navigation - Scrollable */}
-        <div className="flex flex-col pt-14 flex-1 overflow-y-auto">
-          <h2 className="text-3xl font-bold mb-4 px-2">Panel</h2>
+        <div className="flex flex-col pt-6 lg:pt-14 flex-1 overflow-y-auto">
+          <h2 className="text-2xl lg:text-3xl font-bold mb-4 px-2">Panel</h2>
           <ul className="flex gap-1 flex-col">
             {secciones.map((seccion) => (
               <li
                 key={seccion}
-                className={`cursor-pointer p-2 rounded hover:bg-[#304139] ${
+                className={`cursor-pointer p-2 rounded hover:bg-[#304139] transition-colors ${
                   seccionActual === seccion ? "bg-[#304139]" : ""
                 }`}
-                onClick={() => setSeccionActual(seccion)}
+                onClick={() => handleSectionChange(seccion)}
               >
                 {seccion}
               </li>
@@ -144,14 +175,31 @@ const Dashboard = () => {
       </aside>
 
       {/* Contenido principal */}
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-6">
+      <main className="flex-1 overflow-y-auto lg:ml-0">
+        {/* Header con botón hamburguesa para mobile */}
+        <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="text-gray-600 hover:text-gray-900 focus:outline-none focus:text-gray-900"
+            >
+              <Menu size={24} />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-900">
+              {seccionActual}
+            </h1>
+            <div className="w-6" /> {/* Spacer para centrar el título */}
+          </div>
+        </div>
+
+        {/* Contenido de las secciones */}
+        <div className="p-4 lg:p-6">
           {/* Seccion Productos */}
           {seccionActual === "Productos" && <SeccionProductos />}
           {/* Seccion Servicios */}
           {seccionActual === "Servicios" && <SeccionServicios />}
           {/* Seccion Pedidos */}
-          {seccionActual === "Pedidos" && <SeccionPedidos />}
+          {seccionActual === "Ordenes" && <SeccionPedidos />}
           {/* Seccion Categorias */}
           {seccionActual === "Categorias" && <SeccionCategorias />}
           {/* Seccion Configuracion */}
